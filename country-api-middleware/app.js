@@ -6,13 +6,14 @@ dotenv.config();
 
 const PORT = process.env.PORT || 4000;
 const apiRouter = require('./src/routes/apiRoutes');
-
+const authRouter = require('./src/routes/authRoutes');
 const app = express();
 
 app.use(express.json()); // Parses incoming JSON requests
 app.use(cors()); // Allows requests from different domains
 
-app.use('/api', apiRouter); // Use your routes
+app.use('/api', apiRouter); 
+app.use('/auth', authRouter); 
 
 // Global error handler
 app.use((err, req, res, next) => {
