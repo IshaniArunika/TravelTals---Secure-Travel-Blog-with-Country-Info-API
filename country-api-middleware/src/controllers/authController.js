@@ -1,5 +1,6 @@
 const authService = require('../services/authService');
 const { validationResult } = require('express-validator');
+const { generateCsrfToken } = require('../config/csrf');  // ✅ Import this function
 
 exports.register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -27,11 +28,28 @@ exports.login = async (req, res) => {
 
         // Authenticate user
         const authResult = await authService.authenticate(email, password);
+       
+         // Generate CSRF token
+        const csrfToken = generateCsrfToken();
+       
         if (!authResult) {
             return res.status(401).json({ error: "Invalid credentials" });
         }
 
         const { token, user } = authResult;
+        
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 3600000 // 1 hour
+        });
+
+        res.cookie('csrf-token', csrfToken, {
+            httpOnly: false, // Client-side accessible
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict'
+        });
 
         //  Return JWT in response instead of setting a cookie
         res.json({ 
