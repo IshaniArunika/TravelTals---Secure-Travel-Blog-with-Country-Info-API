@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors'); // Import CORS
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
+ 
 
 dotenv.config();
 
@@ -10,7 +12,9 @@ const authRouter = require('./src/routes/authRoutes');
 const userRouter = require('./src/routes/userRouter')
 const app = express();
 
+ 
 app.use(express.json()); // Parses incoming JSON requests
+app.use(cookieParser());
 app.use(cors()); // Allows requests from different domains
 
 app.use('/api', apiRouter); 

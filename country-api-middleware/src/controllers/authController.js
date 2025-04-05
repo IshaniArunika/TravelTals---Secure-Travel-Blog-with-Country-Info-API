@@ -1,6 +1,6 @@
 const authService = require('../services/authService');
 const { validationResult } = require('express-validator');
-const { generateCsrfToken } = require('../config/csrf');  // ✅ Import this function
+    
 
 exports.register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -16,52 +16,56 @@ exports.register = async (req, res) => {
         const newUser = await authService.register(username, email, password);
         res.status(201).json({ message: 'User registered successfully', user: newUser });
     } catch (error) {
-        res.status(500).json({ error: 'Registration failed' });
+        console.error("Login error:", error);
+        res.status(500).json({ error: error.message });
     }
 };
 
 exports.login = async (req, res) => {
     const { email, password } = req.body;
-
+  
     try {
-        console.log("Attempting login for:", email);
-
-        // Authenticate user
-        const authResult = await authService.authenticate(email, password);
+      console.log("Attempting login for:", email);
+      const authResult = await authService.authenticate(email, password);
+  
+      if (!authResult) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
+  
+      res.cookie('jwt', authResult.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict',
+        maxAge: 3600000 // 1 hour
+      });
+  
+      res.cookie('csrf-token', authResult.csrfToken, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict'
+      });
+      
        
-         // Generate CSRF token
-        const csrfToken = generateCsrfToken();
-       
-        if (!authResult) {
-            return res.status(401).json({ error: "Invalid credentials" });
-        }
-
-        const { token, user } = authResult;
-        
-        res.cookie('jwt', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict',
-            maxAge: 3600000 // 1 hour
+      const responese = res.json({
+          message: "Login successful",
+          token: authResult.accessToken,
+          csrfToken: authResult.csrfToken,
+          user: {
+            id: authResult.user.id,
+            email: authResult.user.email,
+            username: authResult.user.username
+          }
         });
-
-        res.cookie('csrf-token', csrfToken, {
-            httpOnly: false, // Client-side accessible
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict'
-        });
-
-        //  Return JWT in response instead of setting a cookie
-        res.json({ 
-            message: "Login successful", 
-            token, // Send token in response
-            user: { id: user.id, email: user.email }
-        });
-
+        console.log(" final responese : ",responese)
+        return responese;
+      
     } catch (error) {
-        res.status(500).json({ error: "Login failed" });
+      console.error("Login error:", error);
+      res.status(500).json({ error: error.message  });
     }
-};
+  };
+  
+
 
  
 
