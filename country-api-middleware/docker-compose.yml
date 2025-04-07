@@ -8,4 +8,5 @@ services:
       - NODE_ENV=production
     volumes:
       - .:/app
+      - ./database.sqlite:/app/database.sqlite
     restart: unless-stopped

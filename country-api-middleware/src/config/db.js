@@ -1,8 +1,8 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
- 
-const db = new sqlite3.Database(path.join(__dirname, '../../database.sqlite'), (err) => {
+// Updated path to work inside Docker (relative to /app inside the container)
+const db = new sqlite3.Database('./database.sqlite', (err) => {
     if (err) {
         console.error('Database connection failed:', err.message);
     } else {
@@ -21,6 +21,5 @@ db.serialize(() => {
         )
     `);
 });
-
 
 module.exports = db;
