@@ -39,8 +39,9 @@ const Home = () => {
           <p><strong>Capital:</strong> {countryDetails.capital}</p>
           <p><strong>Currency:</strong> {countryDetails.currency}</p>
           <p><strong>Languages:</strong> {countryDetails.languages?.join(', ')}</p>
+          <img src={countryDetails.flag} alt={`Flag of ${countryDetails.name}`} width="150" />
         </div>
-      )}
+    )}
     </div>
   );
 };

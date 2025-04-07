@@ -1,6 +1,12 @@
 # Use official Node.js image
 FROM node:18
 
+# Install SQLite and dependencies required for the sqlite3 package
+RUN apt-get update && apt-get install -y \
+    sqlite3 \
+    libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Set working directory
 WORKDIR /app
 
