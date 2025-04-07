@@ -56,7 +56,7 @@ exports.login = async (req, res) => {
             username: authResult.user.username
           }
         });
-        console.log(" final responese : ",responese)
+    
         return responese;
       
     } catch (error) {
