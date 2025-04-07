@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { generateCSRFToken } = require('./csrf');  // Import fixed
 require('dotenv').config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || "7490099a0b74c86fb29ac375823f3366ca003353b5ed4a255b6b4118165a6d6e";
 const JWT_EXPIRES_IN = '24h';
 
 // Check if the JWT_SECRET is correctly loaded
