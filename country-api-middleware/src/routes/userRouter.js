@@ -1,15 +1,35 @@
 const express = require('express');
 const { authenticateJWT } = require('../middleware/auth');
 const { csrfProtection } = require('../middleware/csrf');
+const UserService = require('../services/userService');
+
 const router = express.Router();
 
-// Apply JWT and CSRF protection middleware
+// Apply middleware
 router.use(authenticateJWT);
 router.use(csrfProtection);
 
-// Example protected route
-router.put('/profile', (req, res) => {
-    res.json({ message: "Profile updated successfully" });
+// GET /user/profile
+router.get('/profile', async (req, res) => {
+    try {
+        const user = await UserService.getUserById(req.user.userId);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// PUT /user/plan
+router.put('/plan', async (req, res) => {
+    const { plan } = req.body;
+
+    try {
+        const result = await UserService.updateUserPlan(req.user.userId, plan);
+        res.json({ message: `Plan updated to '${result.plan}'` });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
 });
 
 module.exports = router;

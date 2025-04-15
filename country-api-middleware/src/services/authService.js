@@ -1,86 +1,48 @@
 const bcrypt = require('bcryptjs');
-const db = require('../config/db');
-const { generateToken } = require('../config/jwt');  
-const User = require('../models/user');
-const { generateApiKey } = require('../config/apiKye'); 
-
-
+const { generateToken } = require('../config/jwt');
+const { generateApiKey } = require('../config/apiKye');
+const userService = require('./userService');
+const authDao = require('../dao/authDao');
 
 class AuthService {
     async register(username, email, password) {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        return User.create(username, email, hashedPassword);
+        return await userService.createUser(username, email, password);
     }
 
     async authenticate(email, password) {
-        const user = await User.findByEmail(email);
-        if (!user) {
-            console.log("User not found");
-            return null;
-        }
+        const user = await userService.getUserByEmail(email);  // ✅ correct call
+        if (!user) return null;
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            console.log("Password mismatch");
-            return null;
-        }
+        if (!isMatch) return null;
 
-        try {
-            console.log(" About to generate tokens for user:", user.email);
-            
-            const result = generateToken(user); // DO NOT destructure immediately
-            console.log("Token result:", result);
-        
-            const { accessToken, csrfToken } = result;
+        const { accessToken, csrfToken } = generateToken(user);
+        const apiKey = await this.generateOrFetchApiKey(user.id);
 
-            const apiKey = await this.generateOrFetchApiKey(user.id);
-            console.log("Api_key :",apiKey)
-
-            const safeUser = {
+        return {
+            accessToken,
+            csrfToken,
+            apiKey,
+            user: {
                 id: user.id,
                 email: user.email,
                 username: user.username
-            };
-        
-            return {
-                accessToken,
-                csrfToken,
-                apiKey, 
-                user: safeUser
-            };
-        } catch (error) {
-            console.error("CRASHED in token generation:", error.message);
-            return null;
-        }
-          
+                
+            }
+        };
     }
 
     async generateOrFetchApiKey(userId) {
-        return new Promise((resolve, reject) => {
-            const now = new Date();
-            const nowISO = now.toISOString();
-            console.log("Checking for existing API key for user:", userId);
-            db.get(
-                `SELECT api_key FROM api_keys WHERE user_id = ? AND expires_at > ?`,
-                [userId, nowISO],
-                (err, row) => {
-                    if (err) return reject(err);
-                    if (row) return resolve(row.api_key); // Return existing
+        const now = new Date();
+        const nowISO = now.toISOString();
 
-                    const newKey = generateApiKey();
-                    const expires = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
+        const existing = await authDao.findValidApiKey(userId, nowISO);
+        if (existing) return existing;
 
-                    db.run(
-                        `INSERT INTO api_keys (user_id, api_key, expires_at) VALUES (?, ?, ?)`,
-                        [userId, newKey, expires],
-                        function (err2) {
-                            if (err2) return reject(err2);
-                            resolve(newKey);
-                        }
-                    );
-                }
-            );
-        });
+        const newKey = generateApiKey();
+        const expiresAt = new Date(now.getTime() + 86400000).toISOString();
+
+        return await authDao.insertApiKey(userId, newKey, expiresAt);
     }
 }
 
