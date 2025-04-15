@@ -6,6 +6,9 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
         console.error('Database connection failed:', err.message);
     } else {
         console.log('Connected to SQLite database.');
+        //Enable foreign key constraints
+        db.run('PRAGMA foreign_keys = ON');
+
     }
 });
 
