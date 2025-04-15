@@ -50,6 +50,7 @@ exports.login = async (req, res) => {
           message: "Login successful",
           token: authResult.accessToken,
           csrfToken: authResult.csrfToken,
+          apiKey: authResult.apiKey,
           user: {
             id: authResult.user.id,
             email: authResult.user.email,

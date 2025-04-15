@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors'); // Import CORS
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
- 
+require('./src/config/db');
+
 
 dotenv.config();
 
