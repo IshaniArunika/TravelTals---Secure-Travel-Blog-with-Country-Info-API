@@ -43,6 +43,23 @@ db.serialize(() => {
             console.log('api_keys table created or already exists.');
         }
     });
+
+    db.run(`
+        CREATE TABLE IF NOT EXISTS api_usage (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            api_key TEXT NOT NULL,
+            endpoint TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+    `, (err) => {
+        if (err) {
+            console.error('Error creating api_usage table:', err.message);
+        } else {
+            console.log('api_usage table created or already exists.');
+        }
+    });
 });
 
 module.exports = db;

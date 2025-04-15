@@ -1,5 +1,6 @@
 const express = require('express');
 const { getCountries, getCountry } = require('../controllers/apiController');
+const checkApiKey = require('../middleware/checkApiKey');
 
 const router = express.Router();
 
