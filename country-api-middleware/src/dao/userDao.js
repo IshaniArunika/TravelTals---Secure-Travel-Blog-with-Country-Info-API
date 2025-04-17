@@ -40,23 +40,33 @@ class UserDao {
         });
     }
 
-    static async listAll() {
+    // static async listAll() {
+    //     return new Promise((resolve, reject) => {
+    //         db.all(`SELECT id, username, email, role, plan FROM users`, [], (err, rows) => {
+    //             if (err) return reject(err);
+    //             resolve(rows);
+    //         });
+    //     });
+    // }
+
+    // static async updatePlan(userId, newPlan) {
+    //     return new Promise((resolve, reject) => {
+    //         db.run(`UPDATE users SET plan = ? WHERE id = ?`, [newPlan, userId], function (err) {
+    //             if (err) return reject(err);
+    //             resolve(true);
+    //         });
+    //     });
+    // }
+
+    static async getUsersByRole(role) {
         return new Promise((resolve, reject) => {
-            db.all(`SELECT id, username, email, role, plan FROM users`, [], (err, rows) => {
+            db.all(`SELECT id, username, email, role, plan FROM users WHERE role = ?`, [role], (err, rows) => {
                 if (err) return reject(err);
                 resolve(rows);
             });
         });
     }
-
-    static async updatePlan(userId, newPlan) {
-        return new Promise((resolve, reject) => {
-            db.run(`UPDATE users SET plan = ? WHERE id = ?`, [newPlan, userId], function (err) {
-                if (err) return reject(err);
-                resolve(true);
-            });
-        });
-    }
+    
 }
 
 module.exports = UserDao;

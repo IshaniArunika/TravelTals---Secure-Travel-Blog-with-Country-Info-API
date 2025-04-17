@@ -26,9 +26,9 @@ module.exports = function (req, res, next) {
         const limit = plan === 'paid' ? 100 : 5;
 
         // Attach user ID to request for all routes
-        req.user = { userId };
+        req.user = { id :userId };
 
-        // ✅ Allow /api/usage route without checking limit
+        //  Allow /api/usage route without checking limit
         if (req.originalUrl.startsWith('/api/usage')) {
             return next();
         }

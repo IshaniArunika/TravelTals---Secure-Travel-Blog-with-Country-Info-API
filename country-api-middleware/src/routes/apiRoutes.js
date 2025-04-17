@@ -1,10 +1,15 @@
 const express = require('express');
 const router = express.Router();
+
+const { authenticateJWT } = require('../middleware/auth');
+const { csrfProtection } = require('../middleware/csrf'); 
 const checkApiKey = require('../middleware/checkApiKey');
 const apiService = require('../services/apiService');
 const usageService = require('../services/usageService');
 
-// GET /api/country?name=...
+router.use(authenticateJWT);
+router.use(csrfProtection);
+
 router.get('/country', checkApiKey, async (req, res) => {
   const name = req.query.name;
 
@@ -15,10 +20,9 @@ router.get('/country', checkApiKey, async (req, res) => {
   try {
     const country = await apiService.getCountryByName(name);
 
-    // Get current usage info for the logged-in user
-    const usage = await usageService.getUsageSummary(req.user.userId);
+    // Access req.user set by JWT middleware
+    const usage = await usageService.getUsageSummary(req.user.id); 
 
-    //  Respond with both country and usage in one call
     res.json({ country, usage });
   } catch (err) {
     console.error('Error in /api/country:', err.message);
