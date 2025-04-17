@@ -26,8 +26,9 @@ class AuthService {
             user: {
                 id: user.id,
                 email: user.email,
-                username: user.username
-                
+                username: user.username,
+                plan: user.plan,   
+                role: user.role
             }
         };
     }

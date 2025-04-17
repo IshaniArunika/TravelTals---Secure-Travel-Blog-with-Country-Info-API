@@ -1,16 +1,16 @@
 import axios from 'axios';
 
-export const fetchCountries = async (countryName) => {
-  try {
-    const response = await axios.post('http://localhost:4000/api/countries', {
-      country: countryName,
-    });
-    return response.data;
-  } catch (error) {
-    console.log('Error fetching country details:', error);
-    throw error;
-  }
-};
+// export const fetchCountries = async (countryName) => {
+//   try {
+//     const response = await axios.post('http://localhost:4000/api/countries', {
+//       country: countryName,
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.log('Error fetching country details:', error);
+//     throw error;
+//   }
+// };
 
 
 export const fetchCountryDetails = async (countryName) => {
@@ -33,7 +33,7 @@ export const fetchCountryDetails = async (countryName) => {
       }
     );
 
-    return response.data.country;
+    return response.data;
   } catch (error) {
     console.log('Error fetching country details:', error.response?.data || error.message);
     throw error;
