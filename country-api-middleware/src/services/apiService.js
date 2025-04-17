@@ -9,7 +9,7 @@ class ApiService {
             return apiData.map(this.formatCountry);
         } catch (error) {
             console.error("API Error:", error.message);
-            return this.loadFromLocalFile();
+           // return this.loadFromLocalFile();
         }
     }
 
@@ -19,7 +19,7 @@ class ApiService {
             return this.formatCountry(country);
         } catch (apiError) {
             console.warn("Falling back to local file for:", name);
-            return this.loadFromLocalFileByName(name);
+          //  return this.loadFromLocalFileByName(name);
         }
     }
 

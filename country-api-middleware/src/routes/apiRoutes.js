@@ -1,33 +1,29 @@
 const express = require('express');
-const apiService = require('../services/apiService');
-const checkApiKey = require('../middleware/checkApiKey');
-
 const router = express.Router();
-
-// Apply API key middleware to all routes
-router.use(checkApiKey);
-
-// GET /api/countries
-router.get('/countries', async (req, res) => {
-    try {
-        const countries = await apiService.getAllCountries();
-        res.json({ countries });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+const checkApiKey = require('../middleware/checkApiKey');
+const apiService = require('../services/apiService');
+const usageService = require('../services/usageService');
 
 // GET /api/country?name=...
-router.get('/country', async (req, res) => {
-    const name = req.query.name;
-    if (!name) return res.status(400).json({ error: 'Country name is required' });
+router.get('/country', checkApiKey, async (req, res) => {
+  const name = req.query.name;
 
-    try {
-        const country = await apiService.getCountryByName(name);
-        res.json({ country });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+  if (!name) {
+    return res.status(400).json({ error: 'Country name is required' });
+  }
+
+  try {
+    const country = await apiService.getCountryByName(name);
+
+    // Get current usage info for the logged-in user
+    const usage = await usageService.getUsageSummary(req.user.userId);
+
+    //  Respond with both country and usage in one call
+    res.json({ country, usage });
+  } catch (err) {
+    console.error('Error in /api/country:', err.message);
+    res.status(500).json({ error: 'Failed to fetch country details or usage' });
+  }
 });
 
 module.exports = router;

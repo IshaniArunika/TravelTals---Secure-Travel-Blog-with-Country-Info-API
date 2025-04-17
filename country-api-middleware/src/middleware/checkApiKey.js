@@ -25,7 +25,14 @@ module.exports = function (req, res, next) {
         const plan = row.plan;
         const limit = plan === 'paid' ? 100 : 5;
 
-        // Count how many times the user has used the API in the last 24 hours
+        // Attach user ID to request for all routes
+        req.user = { userId };
+
+        // ✅ Allow /api/usage route without checking limit
+        if (req.originalUrl.startsWith('/api/usage')) {
+            return next();
+        }
+
         db.get(`
             SELECT COUNT(*) as usageCount
             FROM api_usage
@@ -42,19 +49,20 @@ module.exports = function (req, res, next) {
                 });
             }
 
-            // Log usage
-            db.run(`
-                INSERT INTO api_usage (user_id, api_key, endpoint, timestamp)
-                VALUES (?, ?, ?, datetime('now'))
-            `, [userId, apiKey, req.originalUrl], (logErr) => {
-                if (logErr) {
-                    console.error("Failed to log usage:", logErr.message);
-                }
-
-                // Attach user ID to request
-                req.user = { userId };
+            // ✅ Log usage only for /api/country
+            if (req.originalUrl.startsWith('/api/country')) {
+                db.run(`
+                    INSERT INTO api_usage (user_id, api_key, endpoint, timestamp)
+                    VALUES (?, ?, ?, datetime('now'))
+                `, [userId, apiKey, req.originalUrl], (logErr) => {
+                    if (logErr) {
+                        console.error("Failed to log usage:", logErr.message);
+                    }
+                    next();
+                });
+            } else {
                 next();
-            });
+            }
         });
     });
 };

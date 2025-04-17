@@ -1,46 +1,102 @@
-.home-container {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
-  text-align: center;
-}
-
-.search-bar {
+.home-page {
+  max-width: 800px;
+  margin: 40px auto;
   display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 30px;
+  padding: 0 20px;
 }
 
-.search-bar input {
-  padding: 10px;
+/* API Usage Card */
+.api-usage-card {
+  background-color: #e0f2fe;
+  border-radius: 12px;
+  padding: 25px 30px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.progress-bar-container {
+  background-color: #e2e8f0;
+  border-radius: 20px;
+  height: 16px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: #2563eb;
+  border-radius: 20px 0 0 20px;
+  transition: width 0.3s ease;
+}
+
+.usage-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #475569;
+  margin-bottom: 15px;
+}
+
+.usage-info {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: left;
+  font-size: 14px;
+  border: 1px solid #cbd5e1;
+}
+
+/* Search Card */
+.search-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 25px 30px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.search-input-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.search-input-wrapper input {
+  padding: 10px 15px;
   width: 60%;
   font-size: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
 }
 
-.search-bar button {
+.search-input-wrapper button {
   padding: 10px 20px;
-  font-size: 16px;
-  background-color: #38bdf8;
+  font-size: 15px;
+  background-color: #2563eb;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
-.search-bar button:hover {
-  background-color: #0ea5e9;
-}
-
-.country-details {
-  text-align: left;
-  background: #f1f5f9;
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
+.search-input-wrapper button:hover {
+  background-color: #1d4ed8;
 }
 
 .error {
   color: red;
   font-weight: bold;
+  margin-top: 10px;
+}
+
+.country-details {
+  text-align: left;
+  margin-top: 20px;
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 8px;
 }

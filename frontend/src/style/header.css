@@ -45,6 +45,7 @@ body, html {
   list-style: none;
   padding: 0;
   margin: 0;
+  align-items: center;
 }
 
 .nav-links a {
@@ -70,6 +71,31 @@ body, html {
   color: #0f172a;
   padding: 8px 20px;
   border-radius: 10px;
+}
+
+.logout-btn {
+  background-color: #e11d48;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: #be123c;
+}
+
+/* User icon */
+.user-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #38bdf8;
+  font-size: 1.5rem;
+  cursor: default;
 }
 
 /* Mobile responsive */

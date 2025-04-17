@@ -16,7 +16,12 @@ const Login = () => {
 
     try {
       const data = await loginUser({ email, password });
-      localStorage.setItem("user", JSON.stringify(data));
+      const userData = {
+        ...data.user,        // copies: id, email, username
+        api_key: data.apiKey // adds: api_key from response
+      };
+      
+      localStorage.setItem("user", JSON.stringify(userData));
       navigate('/home');
     } catch (error) {
       alert("Login failed. Please check your credentials.");

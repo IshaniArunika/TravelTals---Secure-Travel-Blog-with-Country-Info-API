@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 4000;
 const apiRouter = require('./src/routes/apiRoutes');
 const authRouter = require('./src/routes/authRoutes');
 const userRouter = require('./src/routes/userRouter')
+const usageRoutes = require('./src/routes/usageRoutes');
 const app = express();
 
  
@@ -21,7 +22,7 @@ app.use(cors()); // Allows requests from different domains
 app.use('/api', apiRouter); 
 app.use('/auth', authRouter); 
 app.use('/users', userRouter);
-
+app.use('/api/usage', usageRoutes); 
 // Global error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
