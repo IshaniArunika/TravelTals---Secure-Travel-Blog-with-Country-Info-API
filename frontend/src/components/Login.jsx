@@ -17,7 +17,7 @@ const Login = () => {
     try {
       const data = await loginUser({ email, password });
       const userData = {
-        ...data.user,        // copies: id, email, username
+        ...data.user,         
         api_key: data.apiKey // adds: api_key from response
       };
       

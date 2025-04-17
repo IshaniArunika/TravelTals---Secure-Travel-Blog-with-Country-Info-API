@@ -54,7 +54,7 @@ router.post('/login', [
             token: authResult.accessToken,
             csrfToken: authResult.csrfToken,
             apiKey: authResult.apiKey,
-            user: authResult.user
+            user: authResult.user,
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -3,7 +3,7 @@ const db = require('../config/db');
 class UserDao {
     static async findByEmail(email) {
         return new Promise((resolve, reject) => {
-            db.get(`SELECT * FROM users WHERE email = ?`, [email], (err, row) => {
+            db.get(`SELECT id, email, username, role, plan, password FROM users WHERE email = ?`, [email], (err, row) => {
                 if (err) return reject(err);
                 resolve(row);
             });
@@ -13,15 +13,22 @@ class UserDao {
     static async create(username, email, hashedPassword) {
         return new Promise((resolve, reject) => {
             db.run(
-                `INSERT INTO users (username, email, password) VALUES (?, ?, ?)`,
-                [username, email, hashedPassword],
+                `INSERT INTO users (username, email, password, role, plan) VALUES (?, ?, ?, ?, ?)`,
+                [username, email, hashedPassword, 'user', 'free'],
                 function (err) {
                     if (err) return reject(err);
-                    resolve({ id: this.lastID, username, email });
+                    resolve({
+                        id: this.lastID,
+                        username,
+                        email,
+                        plan: 'free',
+                        role: 'user'
+                    });
                 }
             );
         });
     }
+    
 
     static async getById(id) {
         return new Promise((resolve, reject) => {

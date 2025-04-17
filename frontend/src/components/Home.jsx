@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import '../style/home.css';
 import { fetchApiUsage, fetchCountryDetails } from '../api/countryApi';
 
@@ -8,44 +8,32 @@ const Home = () => {
   const [error, setError] = useState('');
   const [usageData, setUsageData] = useState(null);
 
-  useEffect(() => {
-    const fetchUsage = async () => {
-      try {
-        const data = await fetchApiUsage();
-        setUsageData(data);
-      } catch (err) {
-        console.error('Polling failed:', err.message);
-      }
-    };
-  
-    fetchUsage(); // Initial fetch
-  
-    const interval = setInterval(fetchUsage, 2000); 
-  
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
-  
-
   const handleSearch = async () => {
     try {
       const data = await fetchCountryDetails(countryName);
-      setCountryDetails(data.country);
-      setUsageData(data.usage);  
+      setCountryDetails(data.country);     // ✅ working with updated countryApi.js
+      setUsageData(data.usage);            // ✅ live update
       setError('');
     } catch (err) {
-      const usage = await fetchApiUsage(); // fallback
-      setUsageData(usage);
+      try {
+        const fallback = await fetchApiUsage();  // fallback in case of error
+        setUsageData(fallback);
+      } catch (e) {
+        console.error('Failed fallback usage fetch:', e.message);
+      }
+
       setCountryDetails(null);
-  
       const status = err?.response?.status;
+
       if (status === 429) setError('API usage limit exceeded.');
       else if (status === 404) setError('Country not found.');
       else setError('Something went wrong.');
     }
   };
-  
 
-  const usagePercent = usageData ? Math.round((usageData.usageCount / usageData.limit) * 100) : 0;
+  const usagePercent = usageData
+    ? Math.round((usageData.usageCount / usageData.limit) * 100)
+    : 0;
 
   return (
     <div className="home-page">
