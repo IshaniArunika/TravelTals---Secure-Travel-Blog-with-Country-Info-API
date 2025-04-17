@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../style/home.css';
 import { fetchApiUsage, fetchCountryDetails } from '../api/countryApi';
 
@@ -8,11 +8,24 @@ const Home = () => {
   const [error, setError] = useState('');
   const [usageData, setUsageData] = useState(null);
 
+  // Load usage on page load/reload
+  useEffect(() => {
+    const loadUsage = async () => {
+      try {
+        const usage = await fetchApiUsage();
+        setUsageData(usage);   // ✅ assign usage data here
+      } catch (err) {
+        console.error('Failed to fetch usage on load:', err.message);
+      }
+    };
+    loadUsage();
+  }, []);
+
   const handleSearch = async () => {
     try {
       const data = await fetchCountryDetails(countryName);
-      setCountryDetails(data.country);     // ✅ working with updated countryApi.js
-      setUsageData(data.usage);            // ✅ live update
+      setCountryDetails(data.country);
+      setUsageData(data.usage);      // ✅ update usage in real time after search
       setError('');
     } catch (err) {
       try {
@@ -21,10 +34,8 @@ const Home = () => {
       } catch (e) {
         console.error('Failed fallback usage fetch:', e.message);
       }
-
       setCountryDetails(null);
       const status = err?.response?.status;
-
       if (status === 429) setError('API usage limit exceeded.');
       else if (status === 404) setError('Country not found.');
       else setError('Something went wrong.');
