@@ -67,7 +67,9 @@ const Header = () => {
                     <div className="user-info-box">
                       <p><strong>User:</strong> {user.username}</p>
                       <p><strong>Email:</strong> {user.email}</p>
-                      <p><strong>Plan:</strong> {user.plan}</p>
+                      {user.role !== 'admin' && (
+                        <p><strong>Plan:</strong> {user.plan}</p>
+                      )}
                     </div>
                     <div className="api-box">
                       <p><strong>API Key:</strong></p>

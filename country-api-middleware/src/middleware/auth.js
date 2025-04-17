@@ -1,7 +1,7 @@
 const { verifyToken } = require('../config/jwt');
 
 const authenticateJWT = (req, res, next) => {
-    const token = req.headers.authorization; 
+    const token = req.cookies.jwt; 
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized - No Token Provided' });
     }

@@ -8,16 +8,17 @@ const Home = () => {
   const [error, setError] = useState('');
   const [usageData, setUsageData] = useState(null);
 
-  // Load usage on page load/reload
+  // ✅ Load usage on mount
   useEffect(() => {
     const loadUsage = async () => {
       try {
         const usage = await fetchApiUsage();
-        setUsageData(usage);   
+        setUsageData(usage);
       } catch (err) {
         console.error('Failed to fetch usage on load:', err.message);
       }
     };
+
     loadUsage();
   }, []);
 
@@ -25,19 +26,21 @@ const Home = () => {
     try {
       const data = await fetchCountryDetails(countryName);
       setCountryDetails(data.country);
-      setUsageData(data.usage);       
+      setUsageData(data.usage); // update usage from response
       setError('');
     } catch (err) {
       try {
-        const fallback = await fetchApiUsage();  // fallback in case of error
+        const fallback = await fetchApiUsage(); // fallback usage
         setUsageData(fallback);
-      } catch (e) {
-        console.error('Failed fallback usage fetch:', e.message);
+      } catch (fallbackError) {
+        console.error('Failed fallback usage fetch:', fallbackError.message);
       }
+
       setCountryDetails(null);
       const status = err?.response?.status;
       if (status === 429) setError('API usage limit exceeded.');
       else if (status === 404) setError('Country not found.');
+      else if (status === 403 || status === 401) setError('Unauthorized or token missing.');
       else setError('Something went wrong.');
     }
   };
@@ -48,7 +51,7 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      {/* API Usage Block */}
+      {/* ✅ API Usage Panel */}
       <div className="api-usage-card">
         <h3>API Usage: {usagePercent}%</h3>
         <div className="progress-bar-container">
@@ -65,7 +68,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Country Search Block */}
+      {/* ✅ Search Country Section */}
       <div className="search-card">
         <h3>Search Country</h3>
         <div className="search-input-wrapper">
