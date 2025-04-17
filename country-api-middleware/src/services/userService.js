@@ -2,10 +2,11 @@ const bcrypt = require('bcryptjs');
 const UserDao = require('../dao/userDao');
 
 class UserService {
-    async createUser(username, email, password) {
+    async createUser(username, email, password, role = 'user', plan = 'free') {
         const hashedPassword = await bcrypt.hash(password, 10);
-        return await UserDao.create(username, email, hashedPassword);
-    }
+        return await UserDao.create(username, email, hashedPassword, role, plan);
+      }
+      
 
     async getUserByEmail(email) {
         return await UserDao.findByEmail(email);

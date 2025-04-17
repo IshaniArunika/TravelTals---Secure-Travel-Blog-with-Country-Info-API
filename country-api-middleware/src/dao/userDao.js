@@ -10,24 +10,25 @@ class UserDao {
         });
     }
     
-    static async create(username, email, hashedPassword) {
+    static async create(username, email, hashedPassword, role = 'user', plan = 'free') {
         return new Promise((resolve, reject) => {
-            db.run(
-                `INSERT INTO users (username, email, password, role, plan) VALUES (?, ?, ?, ?, ?)`,
-                [username, email, hashedPassword, 'user', 'free'],
-                function (err) {
-                    if (err) return reject(err);
-                    resolve({
-                        id: this.lastID,
-                        username,
-                        email,
-                        plan: 'free',
-                        role: 'user'
-                    });
-                }
-            );
+          db.run(
+            `INSERT INTO users (username, email, password, role, plan) VALUES (?, ?, ?, ?, ?)`,
+            [username, email, hashedPassword, role, plan],
+            function (err) {
+              if (err) return reject(err);
+              resolve({
+                id: this.lastID,
+                username,
+                email,
+                role,
+                plan
+              });
+            }
+          );
         });
-    }
+      }
+      
     
 
     static async getById(id) {

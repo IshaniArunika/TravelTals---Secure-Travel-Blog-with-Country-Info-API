@@ -13,7 +13,7 @@ const Home = () => {
     const loadUsage = async () => {
       try {
         const usage = await fetchApiUsage();
-        setUsageData(usage);   // ✅ assign usage data here
+        setUsageData(usage);   
       } catch (err) {
         console.error('Failed to fetch usage on load:', err.message);
       }
@@ -25,7 +25,7 @@ const Home = () => {
     try {
       const data = await fetchCountryDetails(countryName);
       setCountryDetails(data.country);
-      setUsageData(data.usage);      // ✅ update usage in real time after search
+      setUsageData(data.usage);       
       setError('');
     } catch (err) {
       try {
