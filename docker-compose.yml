@@ -3,7 +3,7 @@ services:
   backend:
     build: 
       context: ./country-api-middleware
-      dockerfile: ./dockerfile
+      dockerfile: Dockerfile
     container_name: backend
     restart: unless-stopped 
     ports:
@@ -15,7 +15,7 @@ services:
   frontend:
     build: 
       context: ./frontend
-      dockerfile: ./dockerfile
+      dockerfile: Dockerfile
     container_name: frontend
     restart: unless-stopped 
     ports:
