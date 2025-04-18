@@ -49,14 +49,14 @@ class UserDao {
     //     });
     // }
 
-    // static async updatePlan(userId, newPlan) {
-    //     return new Promise((resolve, reject) => {
-    //         db.run(`UPDATE users SET plan = ? WHERE id = ?`, [newPlan, userId], function (err) {
-    //             if (err) return reject(err);
-    //             resolve(true);
-    //         });
-    //     });
-    // }
+    static async updatePlan(userId, newPlan) {
+        return new Promise((resolve, reject) => {
+            db.run(`UPDATE users SET plan = ? WHERE id = ?`, [newPlan, userId], function (err) {
+                if (err) return reject(err);
+                resolve(true);
+            });
+        });
+    }
 
     static async getUsersByRole(role) {
         return new Promise((resolve, reject) => {

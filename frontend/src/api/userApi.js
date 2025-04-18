@@ -27,3 +27,27 @@ export const fetchUsersWithUsage = async () => {
     throw error;
   }
 };
+
+export const updateUserPlan = async (userId, plan) => {
+  try {
+    const csrfToken = getCookie('csrf-token');
+
+    if (!csrfToken) {
+      throw new Error('Missing CSRF token');
+    }
+
+    const response = await axios.patch(`http://localhost:4000/users/update-plan/${userId}`, {
+      plan
+    }, {
+      headers: {
+        'x-csrf-token': csrfToken
+      },
+      withCredentials: true
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user plan:', error.response?.data || error.message);
+    throw error;
+  }
+};

@@ -21,14 +21,14 @@ class UserService {
     //     return await UserDao.listAll();
     // }
 
-    // async updateUserPlan(userId, plan) {
-    //     const validPlans = ['free', 'paid'];
-    //     if (!validPlans.includes(plan)) throw new Error('Invalid plan');
-    //     const user = await this.getUserById(userId);
-    //     if (!user) throw new Error('User not found');
-    //     await UserDao.updatePlan(userId, plan);
-    //     return { userId, plan };
-    // }
+    async updateUserPlan(userId, plan) {
+        const validPlans = ['free', 'paid'];
+        if (!validPlans.includes(plan)) throw new Error('Invalid plan');
+        const user = await this.getUserById(userId);
+        if (!user) throw new Error('User not found');
+        await UserDao.updatePlan(userId, plan);
+        return { userId, plan };
+    }
 
     async getUsersByRole(role) {
         return await UserDao.getUsersByRole(role);

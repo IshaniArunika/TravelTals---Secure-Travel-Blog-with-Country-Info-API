@@ -20,17 +20,17 @@ router.use(csrfProtection);
 //     }
 // });
 
-// // PUT /user/plan
-// router.put('/plan', async (req, res) => {
-//     const { plan } = req.body;
+router.patch('/update-plan/:id', async (req, res) => {
+  const userId = parseInt(req.params.id);
+  const { plan } = req.body;
 
-//     try {
-//         const result = await UserService.updateUserPlan(req.user.userId, plan);
-//         res.json({ message: `Plan updated to '${result.plan}'` });
-//     } catch (err) {
-//         res.status(400).json({ error: err.message });
-//     }
-// });
+  try {
+    const result = await UserService.updateUserPlan(userId, plan);
+    res.json({ success: true, message: 'Plan updated successfully', data: result });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
 
 //Get all users with role 'user'
 router.get('/role/user', async (req, res) => {

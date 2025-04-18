@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// 🔍 Get cookie value by name
+// Get cookie value by name
 function getCookie(name) {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   return match ? match[2] : null;
@@ -10,7 +10,7 @@ export const fetchCountryDetails = async (countryName) => {
   try {
     const user = JSON.parse(localStorage.getItem('user'));
     const apiKey = user?.api_key;
-    const csrfToken = getCookie('csrf-token'); // ✅ from cookie
+    const csrfToken = getCookie('csrf-token'); // from cookie
 
     if (!apiKey || !csrfToken) {
       throw new Error('Missing API key or CSRF token in cookies/localStorage');
@@ -23,7 +23,7 @@ export const fetchCountryDetails = async (countryName) => {
           'x-api-key': apiKey,
           'x-csrf-token': csrfToken
         },
-        withCredentials: true // ✅ Required for sending JWT cookie
+        withCredentials: true // Required for sending JWT cookie
       }
     );
 
@@ -38,7 +38,7 @@ export const fetchApiUsage = async () => {
   try {
     const user = JSON.parse(localStorage.getItem('user'));
     const apiKey = user?.api_key;
-    const csrfToken = getCookie('csrf-token'); // ✅ from cookie
+    const csrfToken = getCookie('csrf-token'); //  from cookie
 
     if (!apiKey || !csrfToken) {
       throw new Error('Missing API key or CSRF token in cookies/localStorage');
@@ -49,7 +49,7 @@ export const fetchApiUsage = async () => {
         'x-api-key': apiKey,
         'x-csrf-token': csrfToken
       },
-      withCredentials: true // ✅ Required for sending JWT cookie
+      withCredentials: true //Required for sending JWT cookie
     });
 
     console.log("get usage data ", response.data);
