@@ -15,8 +15,8 @@ router.post('/register', [
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     try {
-        const { username, email, password } = req.body;
-        const newUser = await UserService.createUser(username, email, password);
+        const { username, email, password, role,plan  } = req.body;
+        const newUser = await UserService.createUser(username, email, password,role,plan);
         res.status(201).json({ message: 'User registered successfully', user: newUser });
     } catch (error) {
         res.status(500).json({ error: error.message });

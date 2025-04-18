@@ -19,16 +19,17 @@ const Register = () => {
       alert("Passwords do not match");
       return;
     }
-
+  
     try {
       const data = await registerUser({ username, email, password });
       localStorage.setItem("user", JSON.stringify(data));
-      navigate('/home');
+      navigate('/'); // ✅ Redirect to login page
     } catch (error) {
       alert("Registration failed. Please try again.");
       console.error(error);
     }
   };
+  
 
   return (
     <div className="form-container">

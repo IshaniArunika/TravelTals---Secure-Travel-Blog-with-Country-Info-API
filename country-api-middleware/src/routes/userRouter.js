@@ -9,27 +9,48 @@ const router = express.Router();
 router.use(authenticateJWT);
 router.use(csrfProtection);
 
-// GET /user/profile
-router.get('/profile', async (req, res) => {
+// // GET /user/profile
+// router.get('/profile', async (req, res) => {
+//     try {
+//         const user = await UserService.getUserById(req.user.userId);
+//         if (!user) return res.status(404).json({ error: 'User not found' });
+//         res.json(user);
+//     } catch (err) {
+//         res.status(500).json({ error: err.message });
+//     }
+// });
+
+router.patch('/update-plan/:id', async (req, res) => {
+  const userId = parseInt(req.params.id);
+  const { plan } = req.body;
+
+  try {
+    const result = await UserService.updateUserPlan(userId, plan);
+    res.json({ success: true, message: 'Plan updated successfully', data: result });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+//Get all users with role 'user'
+router.get('/role/user', async (req, res) => {
     try {
-        const user = await UserService.getUserById(req.user.userId);
-        if (!user) return res.status(404).json({ error: 'User not found' });
-        res.json(user);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        const users = await UserService.getUsersByRole('user');
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 
-// PUT /user/plan
-router.put('/plan', async (req, res) => {
-    const { plan } = req.body;
 
+router.get('/with-usage', async (req, res) => {
     try {
-        const result = await UserService.updateUserPlan(req.user.userId, plan);
-        res.json({ message: `Plan updated to '${result.plan}'` });
-    } catch (err) {
-        res.status(400).json({ error: err.message });
+      const usersWithUsage = await UserService.getUsersWithUsageByRole('user');
+      res.json(usersWithUsage);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
 });
-
+  
+ 
 module.exports = router;

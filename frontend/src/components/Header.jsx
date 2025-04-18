@@ -18,7 +18,6 @@ const Header = () => {
     setIsLoggedIn(!!storedUser);
     setIsAdmin(storedUser?.role === 'admin');
     setUser(storedUser);
-    console.log(storedUser)
   }, [location]);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -51,8 +50,12 @@ const Header = () => {
 
           {!isLoginOrRegisterPage && isLoggedIn && (
             <>
-              <li><Link to="/home">Home</Link></li>
-              {isAdmin && <li><Link to="/adminpage">AdminPage</Link></li>}
+              {isAdmin ? (
+                <li><Link to="/adminpage">AdminPage</Link></li>
+              ) : (
+                <li><Link to="/home">Home</Link></li>
+              )}
+
               <li
                 className="user-icon-wrapper"
                 onMouseEnter={() => setShowProfile(true)}
@@ -64,7 +67,9 @@ const Header = () => {
                     <div className="user-info-box">
                       <p><strong>User:</strong> {user.username}</p>
                       <p><strong>Email:</strong> {user.email}</p>
-                      <p><strong>Plan:</strong> {user.plan}</p>
+                      {user.role !== 'admin' && (
+                        <p><strong>Plan:</strong> {user.plan}</p>
+                      )}
                     </div>
                     <div className="api-box">
                       <p><strong>API Key:</strong></p>

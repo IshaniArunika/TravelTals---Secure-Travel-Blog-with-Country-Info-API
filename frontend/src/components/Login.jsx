@@ -13,21 +13,29 @@ const Login = () => {
       alert("Please enter both email and password");
       return;
     }
-
+  
     try {
       const data = await loginUser({ email, password });
       const userData = {
-        ...data.user,         
-        api_key: data.apiKey // adds: api_key from response
+        ...data.user,
+        api_key: data.apiKey
       };
-      
+  
       localStorage.setItem("user", JSON.stringify(userData));
-      navigate('/home');
+  
+     
+      if (userData.role === 'admin') {
+        navigate('/adminpage');
+      } else {
+        navigate('/home');
+      }
+  
     } catch (error) {
       alert("Login failed. Please check your credentials.");
       console.error(error);
     }
   };
+  
 
   return (
     <div className="form-container">

@@ -17,7 +17,10 @@ const app = express();
  
 app.use(express.json()); // Parses incoming JSON requests
 app.use(cookieParser());
-app.use(cors()); // Allows requests from different domains
+app.use(cors({
+    origin: 'http://localhost:3000', // Allow only frontend
+    credentials: true                // Enable sending cookies
+  })); // Allows requests from different domains
 
 app.use('/api', apiRouter); 
 app.use('/auth', authRouter); 

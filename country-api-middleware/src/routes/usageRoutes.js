@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const usageService = require('../services/usageService');
+const { authenticateJWT } = require('../middleware/auth');
+const { csrfProtection } = require('../middleware/csrf');
+
+router.use(authenticateJWT);
+router.use(csrfProtection);
 
 router.get('/', async (req, res) => {
   try {
@@ -20,5 +25,15 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.get('/total-api-keys', async (req, res) => {
+  try {
+    const total = await usageService.getTotalApiKeyCount();
+    res.json({ totalApiKeys: total });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 module.exports = router;
