@@ -8,7 +8,7 @@ const Home = () => {
   const [error, setError] = useState('');
   const [usageData, setUsageData] = useState(null);
 
-  // ✅ Load usage on mount
+  // Load usage on mount
   useEffect(() => {
     const loadUsage = async () => {
       try {
@@ -51,7 +51,7 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      {/* ✅ API Usage Panel */}
+      {/* API Usage Panel */}
       <div className="api-usage-card">
         <h3>API Usage: {usagePercent}%</h3>
         <div className="progress-bar-container">
@@ -68,7 +68,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ✅ Search Country Section */}
+      {/* Search Country Section */}
       <div className="search-card">
         <h3>Search Country</h3>
         <div className="search-input-wrapper">

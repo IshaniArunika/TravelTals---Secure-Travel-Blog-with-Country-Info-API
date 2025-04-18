@@ -10,7 +10,7 @@ class AuthService {
     }
 
     async authenticate(email, password) {
-        const user = await userService.getUserByEmail(email);  // ✅ correct call
+        const user = await userService.getUserByEmail(email);  // correct call
         if (!user) return null;
 
         const isMatch = await bcrypt.compare(password, user.password);

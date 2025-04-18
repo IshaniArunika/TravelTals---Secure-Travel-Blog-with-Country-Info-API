@@ -23,7 +23,7 @@ const Register = () => {
     try {
       const data = await registerUser({ username, email, password });
       localStorage.setItem("user", JSON.stringify(data));
-      navigate('/'); // ✅ Redirect to login page
+      navigate('/'); //  Redirect to login page
     } catch (error) {
       alert("Registration failed. Please try again.");
       console.error(error);
