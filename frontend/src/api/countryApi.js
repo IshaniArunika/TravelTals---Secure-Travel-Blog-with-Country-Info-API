@@ -59,3 +59,26 @@ export const fetchApiUsage = async () => {
     throw error;
   }
 };
+
+
+export const fetchTotalApiKeyCount = async () => {
+  try {
+    const csrfToken = getCookie('csrf-token');
+
+    if (!csrfToken) {
+      throw new Error('Missing CSRF token');
+    }
+
+    const response = await axios.get('http://localhost:4000/api/usage/total-api-keys', {
+      headers: {
+        'x-csrf-token': csrfToken
+      },
+      withCredentials: true
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching total API key count:', error.response?.data || error.message);
+    throw error;
+  }
+};

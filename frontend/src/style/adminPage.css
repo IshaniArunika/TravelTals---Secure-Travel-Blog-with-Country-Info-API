@@ -1,52 +1,93 @@
 .admin-container {
-    padding: 40px;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f9fafb;
-  }
-  
-  h2 {
-    text-align: center;
-    color: #0f172a;
-    margin-bottom: 30px;
-  }
-  
-  .table-wrapper {
-    overflow-x: auto;
-  }
-  
-  .admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  }
-  
-  .admin-table th, .admin-table td {
-    padding: 14px 18px;
-    text-align: center;
-    border: 1px solid #e2e8f0;
-  }
-  
-  .admin-table th {
-    background-color: #0f172a;
-    color: white;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-  
-  .admin-table tr:nth-child(even) {
-    background-color: #f1f5f9;
-  }
-  
-  .admin-table tr:hover {
-    background-color: #e2e8f0;
-    transition: background-color 0.2s ease-in-out;
-  }
+  padding: 40px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9fafb;
+}
 
-  .admin-table select {
-    padding: 4px 6px;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-  
-  
+h2 {
+  text-align: center;
+  color: #0f172a;
+  margin-bottom: 30px;
+}
+
+/* Dashboard cards section */
+.dashboard-cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.card {
+  flex: 1;
+  max-width: 250px;
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card .icon {
+  font-size: 36px;
+  color: #0ea5e9;
+  margin-bottom: 10px;
+}
+
+.card h3 {
+  font-size: 24px;
+  margin: 0;
+  color: #0f172a;
+}
+
+.card p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Table styles */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 14px 18px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-table th {
+  background-color: #0f172a;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.admin-table tr:nth-child(even) {
+  background-color: #f1f5f9;
+}
+
+.admin-table tr:hover {
+  background-color: #e2e8f0;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.admin-table select {
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 14px;
+}

@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUsersWithUsage, updateUserPlan } from '../api/userApi';
+import { fetchTotalApiKeyCount } from '../api/countryApi';  
 import '../style/adminPage.css';
+import { FaUsers, FaKey } from 'react-icons/fa';
 
 const AdminPage = () => {
   const [users, setUsers] = useState([]);
+  const [totalKeys, setTotalKeys] = useState(0);
 
   useEffect(() => {
-    const loadUsers = async () => {
+    const loadData = async () => {
       try {
-        const data = await fetchUsersWithUsage();
-        setUsers(data);
+        const usersData = await fetchUsersWithUsage();
+        setUsers(usersData);
+
+        const keyData = await fetchTotalApiKeyCount();
+        setTotalKeys(keyData.totalApiKeys);
       } catch (err) {
-        console.error('Failed to fetch users with usage:', err);
+        console.error('Failed to fetch dashboard data:', err);
       }
     };
 
-    loadUsers();
+    loadData();
   }, []);
 
   const handlePlanChange = async (userId, newPlan) => {
@@ -35,6 +41,20 @@ const AdminPage = () => {
   return (
     <div className="admin-container">
       <h2>User API Usage Report</h2>
+
+      <div className="dashboard-cards">
+        <div className="card">
+          <FaUsers className="icon" />
+          <h3>{users.length}</h3>
+          <p>Total Users</p>
+        </div>
+        <div className="card">
+          <FaKey className="icon" />
+          <h3>{totalKeys}</h3>
+          <p>API Keys Issued</p>
+        </div>
+      </div>
+
       <div className="table-wrapper">
         <table className="admin-table">
           <thead>

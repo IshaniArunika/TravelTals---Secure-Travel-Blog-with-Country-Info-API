@@ -51,6 +51,15 @@ class UsageDao {
     });
   }
   
+  static async getTotalApiKeyCount() {
+    return new Promise((resolve, reject) => {
+      db.get(`SELECT COUNT(*) as count FROM api_keys`, [], (err, row) => {
+        if (err) return reject(err);
+        resolve(row.count);
+      });
+    });
+  }
+  
 }
 
 module.exports = UsageDao;

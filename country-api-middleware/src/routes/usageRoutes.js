@@ -26,4 +26,14 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/total-api-keys', async (req, res) => {
+  try {
+    const total = await usageService.getTotalApiKeyCount();
+    res.json({ totalApiKeys: total });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 module.exports = router;

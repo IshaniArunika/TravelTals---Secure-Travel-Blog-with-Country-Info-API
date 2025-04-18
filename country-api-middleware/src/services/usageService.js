@@ -22,6 +22,11 @@ class UsageService {
   async getUserIdFromApiKey(apiKey) {
     return await UsageDao.getUserIdByApiKey(apiKey);
   }
+
+  async getTotalApiKeyCount() {
+    return await UsageDao.getTotalApiKeyCount();
+  }
+  
 }
 
 module.exports = new UsageService();
