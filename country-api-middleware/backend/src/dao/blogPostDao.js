@@ -35,18 +35,15 @@ module.exports = {
   },
 
   updatePost: (id, postData, callback) => {
-    // First, fetch the existing post
     const getSql = `SELECT * FROM blog_posts WHERE id = ?`;
     db.get(getSql, [id], (err, existingPost) => {
       if (err) return callback(err);
-      if (!existingPost) return callback(null, 0); // No post found
-  
-      // Merge existing data with new data
+      if (!existingPost) return callback(null, 0);
+
       const updatedPost = {
         ...existingPost,
-        ...postData, // only fields passed will override existing values
+        ...postData,
       };
-      console.log('Updating post with values:', updatedPost);
 
       const updateSql = `
         UPDATE blog_posts SET 
@@ -58,7 +55,6 @@ module.exports = {
           updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
       `;
-  
       const params = [
         updatedPost.title,
         updatedPost.content,
@@ -67,20 +63,17 @@ module.exports = {
         updatedPost.image_url,
         id,
       ];
-  
+
       db.run(updateSql, params, function (err) {
         callback(err, this?.changes);
       });
     });
-  }
-  ,
+  },
 
   deletePost: (id, callback) => {
     const sql = `DELETE FROM blog_posts WHERE id = ?`;
     db.run(sql, [id], function (err) {
-      if (typeof callback === 'function') {
-        callback(err, this?.changes);
-      }
+      callback(err, this?.changes);
     });
   },
 
@@ -104,10 +97,8 @@ module.exports = {
     }
 
     sql += ` ORDER BY blog_posts.created_at DESC LIMIT ? OFFSET ?`;
-    params.push(limit);
-    params.push((page - 1) * limit);
+    params.push(limit, (page - 1) * limit);
 
     db.all(sql, params, callback);
-}
-  
+  }
 };
