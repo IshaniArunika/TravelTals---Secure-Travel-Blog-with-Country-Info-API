@@ -14,6 +14,8 @@ const authRouter = require('./src/routes/authRoutes');
 const userRouter = require('./src/routes/userRouter')
 const usageRoutes = require('./src/routes/usageRoutes');
 const blogPostRouter = require('./src/routes/blogPostRoutes')
+const followRoutes = require('./src/routes/followRoutes');
+const postLikes = require('./src/routes/likeRoutes');
 const app = express();
 
  
@@ -32,6 +34,8 @@ app.use('/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/api/usage', usageRoutes); 
 app.use('/blog', blogPostRouter); 
+app.use('/follow', followRoutes);
+app.use('/like', postLikes);
 // Global error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);

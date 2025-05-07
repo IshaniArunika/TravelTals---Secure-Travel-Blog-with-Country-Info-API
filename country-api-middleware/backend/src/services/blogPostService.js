@@ -17,8 +17,8 @@ module.exports = {
     blogPostDao.updatePost(id, postData, callback);
   },
 
-  deletePost: (id, userId, callback) => {
-    blogPostDao.deletePost(id, userId, callback);
+  deletePost: (id, callback) => {
+    blogPostDao.deletePost(id, callback);
   },
 
   searchPosts: (filters, page, limit, callback) => {
