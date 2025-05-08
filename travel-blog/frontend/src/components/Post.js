@@ -5,12 +5,14 @@ import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { AiFillLike, AiFillDislike } from 'react-icons/ai';
 import { fetchLikeCounts, likePost } from '../services/likeService';
 import { deletePost } from '../services/postService';
+import { followUser, unfollowUser } from '../services/followService';
 
-const Post = ({ post, showActions = false }) => {
+const Post = ({ post, showActions = false, isFollowing, onFollowToggle }) => {
   const navigate = useNavigate();
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
-  const [userReaction, setUserReaction] = useState(null); // 'like' | 'dislike' | null
+  const [userReaction, setUserReaction] = useState(null);
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
     fetchLikeCounts(post.id)
@@ -23,21 +25,28 @@ const Post = ({ post, showActions = false }) => {
   }, [post.id]);
 
   const handleReaction = async (type) => {
-    if (!['like', 'dislike'].includes(type)) return;
-
-    const isSame = userReaction === type;
-    const newReaction = isSame ? null : type;
-
     try {
       await likePost(post.id, type);
-
       const { likes, dislikes, userReaction } = await fetchLikeCounts(post.id);
       setLikes(likes);
       setDislikes(dislikes);
       setUserReaction(userReaction);
     } catch (err) {
       alert('You must be logged in to react.');
-      console.error(err);
+    }
+  };
+
+  const handleFollowClick = async () => {
+    try {
+      if (isFollowing) {
+        await unfollowUser(post.user_id);
+        onFollowToggle(post.user_id, false);
+      } else {
+        await followUser(post.user_id);
+        onFollowToggle(post.user_id, true);
+      }
+    } catch (err) {
+      console.error('Follow action failed', err);
     }
   };
 
@@ -48,26 +57,14 @@ const Post = ({ post, showActions = false }) => {
           <button className="icon-btn edit" title="Edit" onClick={() => navigate(`/edit-post/${post.id}`)}>
             <FaEdit />
           </button>
-          <button
-            className="icon-btn delete"
-            title="Delete"
-            onClick={async () => {
-              const confirmDelete = window.confirm("Are you sure you want to delete this post?");
-              if (!confirmDelete) return;
-
-              try {
-                await deletePost(post.id);
-                alert("Post deleted.");
-                window.location.reload(); // You can also call a parent state update
-              } catch (err) {
-                console.error(err);
-                alert("Failed to delete post.");
-              }
-            }}
-          >
+          <button className="icon-btn delete" title="Delete" onClick={async () => {
+            if (window.confirm("Delete this post?")) {
+              await deletePost(post.id);
+              window.location.reload();
+            }
+          }}>
             <FaTrashAlt />
           </button>
-
         </div>
       )}
 
@@ -75,6 +72,11 @@ const Post = ({ post, showActions = false }) => {
         <span className="flag">{post.flag}</span>
         <span className="country">{post.country}</span>
         <span className="username">{post.username}</span>
+        {currentUser && currentUser.id !== post.user_id && (
+          <button className={`follow-btn ${isFollowing ? 'unfollow' : ''}`} onClick={handleFollowClick}>
+            {isFollowing ? 'Unfollow' : 'Follow'}
+          </button>
+        )}
       </div>
 
       <img
@@ -92,15 +94,12 @@ const Post = ({ post, showActions = false }) => {
           <button
             className={`reaction-btn ${userReaction === 'like' ? 'active-like' : ''}`}
             onClick={() => handleReaction('like')}
-            title="Like"
           >
             <AiFillLike size={22} /> {likes}
           </button>
-
           <button
             className={`reaction-btn ${userReaction === 'dislike' ? 'active-dislike' : ''}`}
             onClick={() => handleReaction('dislike')}
-            title="Dislike"
           >
             <AiFillDislike size={22} /> {dislikes}
           </button>

@@ -20,7 +20,7 @@ const blogPostService = {
   deletePost: async (id) => {
     return await blogPostDao.deletePost(id);
   },
-
+  
   searchPosts: async (filters, page, limit) => {
     return await blogPostDao.searchPosts(filters, page, limit);
   }

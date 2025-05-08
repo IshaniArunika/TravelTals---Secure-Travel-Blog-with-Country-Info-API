@@ -87,13 +87,15 @@ const blogPostDao = {
 
   deletePost: async (id) => {
     try {
+      // First delete any likes associated with the post
       await new Promise((resolve, reject) => {
-        db.run(`DELETE FROM post_likes WHERE post_id = ?`, [id], function (err) {
+        db.run(`DELETE FROM likes WHERE post_id = ?`, [id], function (err) {
           if (err) return reject(err);
           resolve();
         });
       });
-
+  
+      // Then delete the post itself
       return await new Promise((resolve, reject) => {
         db.run(`DELETE FROM blog_posts WHERE id = ?`, [id], function (err) {
           if (err) return reject(err);
@@ -103,7 +105,8 @@ const blogPostDao = {
     } catch (err) {
       throw err;
     }
-  },
+  }
+  ,
 
   searchPosts: (filters, page, limit) => {
     let sql = `
@@ -113,27 +116,38 @@ const blogPostDao = {
       WHERE 1=1
     `;
     const params = [];
-
-    if (filters.country) {
-      sql += ` AND LOWER(blog_posts.country) LIKE LOWER(?)`;
-      params.push(`%${filters.country}%`);
-    }
-
+  
+    // console.log("Search filters:", filters);
+  
     if (filters.username) {
-      sql += ` AND LOWER(users.username) LIKE LOWER(?)`;
-      params.push(`%${filters.username}%`);
+      sql += ` AND LOWER(users.username) LIKE ?`;
+      params.push(`%${filters.username.toLowerCase()}%`);
     }
-
+  
+    if (filters.country) {
+      sql += ` AND LOWER(blog_posts.country) LIKE ?`;
+      params.push(`%${filters.country.toLowerCase()}%`);
+    }
+  
     sql += ` ORDER BY blog_posts.created_at DESC LIMIT ? OFFSET ?`;
     params.push(limit, (page - 1) * limit);
-
+  
+    // console.log("Final SQL:", sql);
+    // console.log("Query Params:", params);
+  
     return new Promise((resolve, reject) => {
       db.all(sql, params, (err, rows) => {
-        if (err) return reject(err);
+        if (err) {
+          console.error("DB Error:", err);
+          return reject(err);
+        }
+        console.log("Rows returned:", rows.length);
         resolve(rows);
       });
     });
   }
+  
+  
 };
 
 module.exports = blogPostDao;

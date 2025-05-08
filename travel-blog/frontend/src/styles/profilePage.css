@@ -37,6 +37,8 @@
   position: relative;
   background: white;
   border-bottom: 1px solid #e0e0e0;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .profile-avatar {
@@ -76,7 +78,8 @@
   font-size: 16px;
 }
 
-.logout-button {
+.logout-button,
+.add-post-button {
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -85,9 +88,11 @@
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s ease;
+  margin-left: 10px;
 }
 
-.logout-button:hover {
+.logout-button:hover,
+.add-post-button:hover {
   background-color: #0056b3;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -132,43 +137,6 @@
   font-weight: 500;
 }
 
-/* Profile Actions */
-.profile-actions {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-  gap: 15px;
-  background: white;
-}
-
-.action-button {
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid #e0e0e0;
-  background: white;
-  color: #4a5568;
-}
-
-.action-button:hover {
-  background: #f7fafc;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
-
-.action-button.primary {
-  background: #007bff;
-  color: white;
-  border: none;
-}
-
-.action-button.primary:hover {
-  background: #0069d9;
-}
-
 /* Posts Section */
 .posts-section {
   padding: 30px;
@@ -199,6 +167,21 @@
   gap: 20px;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
+.add-post-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.add-post-button:hover {
+  background-color: #0056b3;
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -206,34 +189,36 @@
     margin-top: 0;
     border-radius: 0;
   }
-  
+
   .profile-header {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .profile-avatar {
     margin-right: 0;
     margin-bottom: 15px;
   }
-  
-  .logout-button {
-    margin-top: 15px;
+
+  .logout-button,
+  .add-post-button {
+    margin: 10px 0 0;
+    width: 100%;
   }
-  
+
   .profile-stats {
     flex-wrap: wrap;
   }
-  
+
   .stat {
     flex: 1 0 33%;
     padding: 15px 0;
   }
-  
+
   .stat:not(:last-child):after {
     display: none;
   }
-  
+
   .posts-container {
     grid-template-columns: 1fr;
   }

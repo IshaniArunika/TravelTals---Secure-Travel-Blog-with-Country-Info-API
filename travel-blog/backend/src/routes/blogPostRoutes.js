@@ -8,14 +8,20 @@ const { csrfProtection } = require('../middleware/csrf');
 // Public: Search posts
 router.get('/search', async (req, res) => {
   const { country, username, page = 1, limit = 10 } = req.query;
+
+  // Clean values
+  const cleanCountry = country?.trim() || undefined;
+  const cleanUsername = username?.trim() || undefined;
+
   try {
     const posts = await blogPostService.searchPosts(
-      { country, username },
+      { country: cleanCountry, username: cleanUsername },
       parseInt(page),
       parseInt(limit)
     );
     res.status(200).json(posts);
   } catch (err) {
+    console.error("Search failed:", err);
     res.status(500).json({ error: 'Failed to search posts' });
   }
 });
@@ -89,17 +95,22 @@ router.delete('/:id', async (req, res) => {
 
   try {
     const existingPost = await blogPostService.getPostById(postId);
-    if (!existingPost) return res.status(404).json({ error: 'Post not found' });
+    if (!existingPost) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
 
-    if (parseInt(existingPost.user_id) !== parseInt(req.user.id))
+    if (parseInt(existingPost.user_id) !== parseInt(req.user.id)) {
       return res.status(403).json({ error: 'Unauthorized' });
+    }
 
     const deleted = await blogPostService.deletePost(postId);
-    if (deleted === 0)
+    if (deleted === 0) {
       return res.status(404).json({ error: 'No post deleted' });
+    }
 
     res.status(200).json({ message: 'Post deleted' });
   } catch (err) {
+    console.error('Failed to delete post:', err);
     res.status(500).json({ error: 'Failed to delete post' });
   }
 });

@@ -127,3 +127,38 @@
 .reaction-btn.active-dislike {
   color:  #007bff;
 }
+
+.follow-btn {
+  margin-left: 12px;
+  padding: 4px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: white;
+  color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.follow-btn:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.follow-btn:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.follow-btn.unfollow {
+  background-color: white;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.follow-btn.unfollow:hover {
+  background-color: #dc3545;
+  color: white;
+}

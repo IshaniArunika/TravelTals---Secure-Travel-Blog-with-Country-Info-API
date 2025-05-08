@@ -1,34 +1,50 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAllPosts } from '../services/postService';
+import { getFollowers, getFollowing } from '../services/followService';
 import '../styles/profilePage.css';
 import Post from './Post';
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
-  const followers = 24;   // placeholder
-  const following = 16;   // placeholder
+  const [followers, setFollowers] = useState(0);
+  const [following, setFollowing] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedUser) {
-      setUser(storedUser);
-
-      getAllPosts()
-        .then(data => {
-          const filtered = data.filter(post => post.user_id === storedUser.id);
-          setUserPosts(filtered);
-        })
-        .catch(err => console.error('Failed to fetch posts:', err));
+    if (!storedUser) {
+      navigate('/'); // redirect to homepage if not logged in
+      return;
     }
-  }, []);
+
+    setUser(storedUser);
+
+    // fetch user's posts
+    getAllPosts()
+      .then(data => {
+        const filtered = data.filter(post => post.user_id === storedUser.id);
+        setUserPosts(filtered);
+      })
+      .catch(err => console.error('Failed to fetch posts:', err));
+
+    // fetch follower/following count
+    getFollowers(storedUser.id)
+      .then(data => setFollowers(data.length))
+      .catch(err => console.error('Failed to fetch followers:', err));
+
+    getFollowing(storedUser.id)
+      .then(data => setFollowing(data.length))
+      .catch(err => console.error('Failed to fetch following:', err));
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
     window.location.href = '/';
   };
 
-  if (!user) return <div className="profile-container">Loading profile...</div>;
+  if (!user) return null;
 
   return (
     <div className="profile-container">
@@ -48,7 +64,10 @@ const ProfilePage = () => {
           <p className="user-email">{user.email}</p>
         </div>
 
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
+        <div className="profile-actions">
+          <button className="logout-button" onClick={handleLogout}>Logout</button>
+          <button className="add-post-button" onClick={() => navigate('/add-post')}>Add Post</button>
+        </div>
       </div>
 
       <div className="profile-stats">
@@ -74,7 +93,9 @@ const ProfilePage = () => {
               <Post key={post.id} post={post} showActions={true} />
             ))
           ) : (
-            <p style={{ color: '#777', textAlign: 'center' }}>You haven’t posted anything yet.</p>
+            <p style={{ color: '#777', textAlign: 'center' }}>
+              You haven’t posted anything yet.
+            </p>
           )}
         </div>
       </div>

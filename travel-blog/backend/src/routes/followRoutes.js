@@ -4,6 +4,24 @@ const followService = require('../services/followService');
 const { authenticateJWT } = require('../middleware/auth');
 const { csrfProtection } = require('../middleware/csrf');
 
+router.get('/followers/:id', async (req, res) => {
+  try {
+    const followers = await followService.getFollowers(parseInt(req.params.id, 10));
+    res.status(200).json({ followers });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.get('/following/:id', async (req, res) => {
+  try {
+    const following = await followService.getFollowing(parseInt(req.params.id, 10));
+    res.status(200).json({ following });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 router.use(authenticateJWT);
 router.use(csrfProtection);
 
@@ -31,22 +49,6 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-router.get('/followers/:id', async (req, res) => {
-  try {
-    const followers = await followService.getFollowers(parseInt(req.params.id, 10));
-    res.status(200).json({ followers });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-router.get('/following/:id', async (req, res) => {
-  try {
-    const following = await followService.getFollowing(parseInt(req.params.id, 10));
-    res.status(200).json({ following });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
+ 
 
 module.exports = router;
