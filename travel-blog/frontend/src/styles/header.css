@@ -53,9 +53,19 @@
   justify-content: center;
   cursor: pointer;
   margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.profile-box:hover {
+  background-color: #0056b3;
 }
 
 .profile-icon {
   font-size: 24px;
   color: white;
+  transition: color 0.3s ease;
+}
+
+.profile-box:hover .profile-icon {
+  color: #e0e0e0;
 }

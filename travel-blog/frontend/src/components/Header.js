@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { MdAccountCircle } from 'react-icons/md';
 import '../styles/header.css';
 
@@ -7,27 +8,24 @@ const Header = ({ onAuthClick, active }) => {
     <header className="header">
       <div className="logo">TravelJoy</div>
       <nav className="nav-links">
-        <span 
-          className={`nav-item ${active === 'home' ? 'active' : ''}`} 
-          onClick={() => onAuthClick('home')}
-        >
+        <Link to="/" className={`nav-item ${active === 'home' ? 'active' : ''}`}>
           Home
-        </span>
-        <span 
-          className={`nav-item ${active === 'login' ? 'active' : ''}`} 
+        </Link>
+        <span
+          className={`nav-item ${active === 'login' ? 'active' : ''}`}
           onClick={() => onAuthClick('login')}
         >
           Login
         </span>
-        <span 
-          className={`nav-item ${active === 'register' ? 'active' : ''}`} 
+        <span
+          className={`nav-item ${active === 'register' ? 'active' : ''}`}
           onClick={() => onAuthClick('register')}
         >
           Register
         </span>
-        <div className="profile-box">
+        <Link to="/profile" className="profile-box" title="Profile">
           <MdAccountCircle className="profile-icon" />
-        </div>
+        </Link>
       </nav>
     </header>
   );

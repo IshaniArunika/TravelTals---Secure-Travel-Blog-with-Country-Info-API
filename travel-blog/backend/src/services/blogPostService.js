@@ -1,27 +1,29 @@
 const blogPostDao = require('../dao/blogPostDao');
 
-module.exports = {
-  createPost: (postData, callback) => {
-    blogPostDao.createPost(postData, callback);
+const blogPostService = {
+  createPost: async (postData) => {
+    return await blogPostDao.createPost(postData);
   },
 
-  getPostById: (id, callback) => {
-    blogPostDao.getPostById(id, callback);
+  getPostById: async (id) => {
+    return await blogPostDao.getPostById(id);
   },
 
-  getAllPosts: (callback) => {
-    blogPostDao.getAllPosts(callback);
+  getAllPosts: async () => {
+    return await blogPostDao.getAllPosts();
   },
 
-  updatePost: (id, postData, callback) => {
-    blogPostDao.updatePost(id, postData, callback);
+  updatePost: async (id, postData) => {
+    return await blogPostDao.updatePost(id, postData);
   },
 
-  deletePost: (id, callback) => {
-    blogPostDao.deletePost(id, callback);
+  deletePost: async (id) => {
+    return await blogPostDao.deletePost(id);
   },
 
-  searchPosts: (filters, page, limit, callback) => {
-    blogPostDao.searchPosts(filters, page, limit, callback);
+  searchPosts: async (filters, page, limit) => {
+    return await blogPostDao.searchPosts(filters, page, limit);
   }
 };
+
+module.exports = blogPostService;

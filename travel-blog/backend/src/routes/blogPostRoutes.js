@@ -5,79 +5,103 @@ const upload = require('../middleware/upload');
 const { authenticateJWT } = require('../middleware/auth');
 const { csrfProtection } = require('../middleware/csrf');
 
-router.get('/search', (req, res) => {
+// Public: Search posts
+router.get('/search', async (req, res) => {
   const { country, username, page = 1, limit = 10 } = req.query;
-
-  blogPostService.searchPosts(
-    { country, username },
-    parseInt(page),
-    parseInt(limit),
-    (err, posts) => {
-      if (err) return res.status(500).json({ error: 'Failed to search posts' });
-      res.status(200).json(posts);
-    }
-  );
-});
-
-router.get('/', (req, res) => {
-  blogPostService.getAllPosts((err, posts) => {
-    if (err) return res.status(500).json({ error: 'Failed to retrieve posts' });
+  try {
+    const posts = await blogPostService.searchPosts(
+      { country, username },
+      parseInt(page),
+      parseInt(limit)
+    );
     res.status(200).json(posts);
-  });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to search posts' });
+  }
 });
 
-router.get('/:id', (req, res) => {
-  blogPostService.getPostById(req.params.id, (err, post) => {
-    if (err) return res.status(500).json({ error: 'Failed to retrieve post' });
+// Public: Get all posts
+router.get('/', async (req, res) => {
+  try {
+    const posts = await blogPostService.getAllPosts();
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to retrieve posts' });
+  }
+});
+
+// Public: Get post by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const post = await blogPostService.getPostById(req.params.id);
     if (!post) return res.status(404).json({ error: 'Post not found' });
     res.status(200).json(post);
-  });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to retrieve post' });
+  }
 });
 
+// Auth middleware (JWT + CSRF)
 router.use(authenticateJWT);
 router.use(csrfProtection);
 
-router.post('/', upload.single('image'), (req, res) => {
+// Create post
+router.post('/', upload.single('image'), async (req, res) => {
   const postData = req.body;
-  if (!req.user || !req.user.id) return res.status(401).json({ error: 'User not authenticated' });
+  if (!req.user || !req.user.id)
+    return res.status(401).json({ error: 'User not authenticated' });
+
   postData.user_id = req.user.id;
   if (req.file) postData.image_url = `/uploads/${req.file.filename}`;
 
-  blogPostService.createPost(postData, (err, postId) => {
-    if (err) return res.status(500).json({ error: 'Failed to create post' });
+  try {
+    const postId = await blogPostService.createPost(postData);
     res.status(201).json({ message: 'Post created', postId });
-  });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create post' });
+  }
 });
 
-router.put('/:id', upload.single('image'), (req, res) => {
+// Update post
+router.put('/:id', upload.single('image'), async (req, res) => {
   const postId = req.params.id;
   const postData = req.body;
 
-  blogPostService.getPostById(postId, (err, existingPost) => {
-    if (err || !existingPost) return res.status(404).json({ error: 'Post not found' });
-    if (existingPost.user_id !== req.user.id) return res.status(403).json({ error: 'Unauthorized' });
+  try {
+    const existingPost = await blogPostService.getPostById(postId);
+    if (!existingPost) return res.status(404).json({ error: 'Post not found' });
+
+    if (parseInt(existingPost.user_id) !== parseInt(req.user.id))
+      return res.status(403).json({ error: 'Unauthorized' });
 
     if (req.file) postData.image_url = `/uploads/${req.file.filename}`;
 
-    blogPostService.updatePost(postId, postData, (err, changes) => {
-      if (err) return res.status(500).json({ error: 'Failed to update post' });
-      res.status(200).json({ message: 'Post updated' });
-    });
-  });
+    const changes = await blogPostService.updatePost(postId, postData);
+    res.status(200).json({ message: 'Post updated', changes });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update post' });
+  }
 });
 
-router.delete('/:id', (req, res) => {
+// Delete post
+router.delete('/:id', async (req, res) => {
   const postId = req.params.id;
 
-  blogPostService.getPostById(postId, (err, existingPost) => {
-    if (err || !existingPost) return res.status(404).json({ error: 'Post not found' });
-    if (existingPost.user_id !== req.user.id) return res.status(403).json({ error: 'Unauthorized' });
+  try {
+    const existingPost = await blogPostService.getPostById(postId);
+    if (!existingPost) return res.status(404).json({ error: 'Post not found' });
 
-    blogPostService.deletePost(postId, (err, changes) => {
-      if (err) return res.status(500).json({ error: 'Failed to delete post' });
-      res.status(200).json({ message: 'Post deleted' });
-    });
-  });
+    if (parseInt(existingPost.user_id) !== parseInt(req.user.id))
+      return res.status(403).json({ error: 'Unauthorized' });
+
+    const deleted = await blogPostService.deletePost(postId);
+    if (deleted === 0)
+      return res.status(404).json({ error: 'No post deleted' });
+
+    res.status(200).json({ message: 'Post deleted' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete post' });
+  }
 });
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
-module.exports = {
-  createPost: (post, callback) => {
+const blogPostDao = {
+  createPost: (post) => {
     const sql = `
       INSERT INTO blog_posts (user_id, title, content, country, date_of_visit, image_url)
       VALUES (?, ?, ?, ?, ?, ?)
@@ -14,70 +14,98 @@ module.exports = {
       post.date_of_visit,
       post.image_url
     ];
-    db.run(sql, params, function (err) {
-      callback(err, this?.lastID);
+
+    return new Promise((resolve, reject) => {
+      db.run(sql, params, function (err) {
+        if (err) return reject(err);
+        resolve(this.lastID);
+      });
     });
   },
 
-  getPostById: (id, callback) => {
+  getPostById: (id) => {
     const sql = `SELECT * FROM blog_posts WHERE id = ?`;
-    db.get(sql, [id], callback);
+
+    return new Promise((resolve, reject) => {
+      db.get(sql, [id], (err, row) => {
+        if (err) return reject(err);
+        resolve(row);
+      });
+    });
   },
 
-  getAllPosts: (callback) => {
+  getAllPosts: () => {
     const sql = `
       SELECT blog_posts.*, users.username
       FROM blog_posts
       JOIN users ON blog_posts.user_id = users.id
       ORDER BY created_at DESC
     `;
-    db.all(sql, [], callback);
-  },
 
-  updatePost: (id, postData, callback) => {
-    const getSql = `SELECT * FROM blog_posts WHERE id = ?`;
-    db.get(getSql, [id], (err, existingPost) => {
-      if (err) return callback(err);
-      if (!existingPost) return callback(null, 0);
-
-      const updatedPost = {
-        ...existingPost,
-        ...postData,
-      };
-
-      const updateSql = `
-        UPDATE blog_posts SET 
-          title = ?, 
-          content = ?, 
-          country = ?, 
-          date_of_visit = ?, 
-          image_url = ?, 
-          updated_at = CURRENT_TIMESTAMP
-        WHERE id = ?
-      `;
-      const params = [
-        updatedPost.title,
-        updatedPost.content,
-        updatedPost.country,
-        updatedPost.date_of_visit,
-        updatedPost.image_url,
-        id,
-      ];
-
-      db.run(updateSql, params, function (err) {
-        callback(err, this?.changes);
+    return new Promise((resolve, reject) => {
+      db.all(sql, [], (err, rows) => {
+        if (err) return reject(err);
+        resolve(rows);
       });
     });
   },
 
-  deletePost: (id, callback) => {
-    const sql = `DELETE FROM blog_posts WHERE id = ?`;
-    db.run(sql, [id], function (err) {
-      callback(err, this?.changes);
+  updatePost: (id, postData) => {
+    return new Promise((resolve, reject) => {
+      db.get(`SELECT * FROM blog_posts WHERE id = ?`, [id], (err, existingPost) => {
+        if (err) return reject(err);
+        if (!existingPost) return resolve(0);
+
+        const updatedPost = { ...existingPost, ...postData };
+
+        const sql = `
+          UPDATE blog_posts SET 
+            title = ?, 
+            content = ?, 
+            country = ?, 
+            date_of_visit = ?, 
+            image_url = ?, 
+            updated_at = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `;
+        const params = [
+          updatedPost.title,
+          updatedPost.content,
+          updatedPost.country,
+          updatedPost.date_of_visit,
+          updatedPost.image_url,
+          id
+        ];
+
+        db.run(sql, params, function (err) {
+          if (err) return reject(err);
+          resolve(this.changes);
+        });
+      });
     });
   },
 
-  searchPosts: (filters, page, limit, callback) => {
+  deletePost: async (id) => {
+    try {
+      await new Promise((resolve, reject) => {
+        db.run(`DELETE FROM post_likes WHERE post_id = ?`, [id], function (err) {
+          if (err) return reject(err);
+          resolve();
+        });
+      });
+
+      return await new Promise((resolve, reject) => {
+        db.run(`DELETE FROM blog_posts WHERE id = ?`, [id], function (err) {
+          if (err) return reject(err);
+          resolve(this.changes);
+        });
+      });
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  searchPosts: (filters, page, limit) => {
     let sql = `
       SELECT blog_posts.*, users.username
       FROM blog_posts
@@ -99,6 +127,13 @@ module.exports = {
     sql += ` ORDER BY blog_posts.created_at DESC LIMIT ? OFFSET ?`;
     params.push(limit, (page - 1) * limit);
 
-    db.all(sql, params, callback);
+    return new Promise((resolve, reject) => {
+      db.all(sql, params, (err, rows) => {
+        if (err) return reject(err);
+        resolve(rows);
+      });
+    });
   }
 };
+
+module.exports = blogPostDao;

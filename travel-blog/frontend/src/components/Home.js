@@ -1,42 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/home.css';
+import { getAllPosts } from '../services/postService';
 import Post from './Post';
 import bgImage from '../assets/background.png';
 import { IoIosAddCircle } from 'react-icons/io';
-
-const allPosts = [
-  {
-    id: 1,
-    title: 'Journey through Kyoto',
-    country: 'Japan',
-    flag: '🇯🇵',
-    username: 'traveler_joe',
-    date: '2025-05-04',
-    image: bgImage,
-    content: 'Kyoto’s temples were magical!',
-    likes: 18,
-    dislikes: 2
-  },
-  {
-    id: 2,
-    title: 'Eiffel Adventure',
-    country: 'France',
-    flag: '🇫🇷',
-    username: 'claireParis',
-    date: '2025-05-02',
-    image: bgImage,
-    content: 'Paris is a city of dreams!',
-    likes: 25,
-    dislikes: 1
-  }
-];
+import '../styles/home.css';
 
 const Home = () => {
+  const [posts, setPosts] = useState([]);
   const [filterCountry, setFilterCountry] = useState('');
   const [filterUser, setFilterUser] = useState('');
   const [showFilter, setShowFilter] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getAllPosts()
+      .then(data => setPosts(data))
+      .catch(err => console.error('Error loading posts:', err));
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,7 +27,7 @@ const Home = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const filteredPosts = allPosts.filter(post => {
+  const filteredPosts = posts.filter(post => {
     const matchesCountry = post.country.toLowerCase().includes(filterCountry.toLowerCase());
     const matchesUser = post.username.toLowerCase().includes(filterUser.toLowerCase());
     return matchesCountry && matchesUser;
@@ -85,12 +66,10 @@ const Home = () => {
         ))}
       </section>
 
-      {/* Add Post Button (desktop) */}
       <div className="add-post-button-wrapper">
         <button className="filter-btn" onClick={() => navigate('/add-post')}>Add Post</button>
       </div>
 
-      {/* Floating Add Icon (mobile/fixed) */}
       <div className="add-icon" onClick={() => navigate('/add-post')}>
         <IoIosAddCircle size={40} />
       </div>
