@@ -1,0 +1,74 @@
+.add-post-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 100px 20px 40px;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  .add-post-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .add-post-card h2 {
+    margin: 0;
+    text-align: center;
+  }
+  
+  .add-post-card input[type="text"],
+  .add-post-card input[type="date"],
+  .add-post-card textarea,
+  .add-post-card input[type="file"] {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 100%;
+    resize: vertical;
+  }
+  
+  .add-post-card textarea {
+    height: 100px;
+  }
+  
+  .add-post-card button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .add-post-card button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Back button wrapper to center it */
+  .back-btn-wrapper {
+    margin-top: 20px;
+  }
+  
+  .back-btn {
+    background-color: transparent;
+    color: #007bff;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .back-btn:hover {
+    color: #0056b3;
+  }
+  
