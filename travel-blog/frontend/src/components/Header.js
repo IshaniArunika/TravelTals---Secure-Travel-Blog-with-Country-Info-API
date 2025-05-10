@@ -1,14 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { MdAccountCircle } from 'react-icons/md';
 import '../styles/header.css';
 
 const Header = ({ onAuthClick, active }) => {
+  const location = useLocation();
+  const path = location.pathname;
+
   return (
     <header className="header">
-      <div className="logo">TravelJoy</div>
+      <div className="logo">TravelTales</div>
       <nav className="nav-links">
-        <Link to="/" className={`nav-item ${active === 'home' ? 'active' : ''}`}>
+        <Link to="/" className={`nav-item ${path === '/' ? 'active' : ''}`}>
           Home
         </Link>
         <span
@@ -23,7 +26,11 @@ const Header = ({ onAuthClick, active }) => {
         >
           Register
         </span>
-        <Link to="/profile" className="profile-box" title="Profile">
+        <Link
+          to="/profile"
+          className={`profile-box ${path === '/profile' ? 'active-profile' : ''}`}
+          title="Profile"
+        >
           <MdAccountCircle className="profile-icon" />
         </Link>
       </nav>

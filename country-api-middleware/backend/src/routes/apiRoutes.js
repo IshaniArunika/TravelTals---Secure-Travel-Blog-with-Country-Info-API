@@ -30,4 +30,19 @@ router.get('/country', checkApiKey, async (req, res) => {
   }
 });
 
+router.get('/countries', checkApiKey, async (req, res) => {
+  try {
+    const countries = await apiService.getAllCountries();
+
+    // Access req.user set by JWT middleware
+    const usage = await usageService.getUsageSummary(req.user.id);
+
+    res.json({ countries, usage });
+  } catch (err) {
+    console.error('Error in /api/countries:', err.message);
+    res.status(500).json({ error: 'Failed to fetch countries list or usage' });
+  }
+});
+
+
 module.exports = router;

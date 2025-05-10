@@ -95,7 +95,7 @@ const Home = () => {
     <div className="home">
       <section className="hero" style={{ backgroundImage: `url(${bgImage})` }}>
         <div className="hero-content">
-          <h1>Welcome to TravelJoy</h1>
+          <h1>Welcome to TravelTales</h1>
           <p>Discover. Share. Inspire.</p>
  
         </div>

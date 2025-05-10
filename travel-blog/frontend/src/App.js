@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import AppRoutes from './routes/appRoutes';
 import Login from './components/Login';
 import Register from './components/Register';
+import { loginToMiddleware, getAllCountries } from './services/countryService';
 
 function App() {
-  const [authModal, setAuthModal] = useState(null); // 'login' | 'register' | null
+  const [authModal, setAuthModal] = useState(null);
   const [activePage, setActivePage] = useState('home');
+  const [allCountries, setAllCountries] = useState([]);
+
+  useEffect(() => {
+    const init = async () => {
+      await loginToMiddleware();
+      const data = await getAllCountries();
+      setAllCountries(data);
+    };
+    init();
+  }, []);
 
   const handleAuthClick = (type) => {
     setAuthModal(type);
@@ -19,15 +30,14 @@ function App() {
       setActivePage(switchTo);
     } else {
       setAuthModal(null);
-      setActivePage('home'); // ✅ Reset to Home
+      setActivePage('home');
     }
   };
 
   return (
     <div className="App">
       <Header onAuthClick={handleAuthClick} active={activePage} />
-      <AppRoutes />
-
+      <AppRoutes allCountries={allCountries} />
       {authModal === 'login' && <Login onClose={handleCloseModal} />}
       {authModal === 'register' && <Register onClose={handleCloseModal} />}
     </div>

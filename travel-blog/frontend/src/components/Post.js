@@ -14,6 +14,12 @@ const Post = ({ post, showActions = false, isFollowing, onFollowToggle }) => {
   const [userReaction, setUserReaction] = useState(null);
   const currentUser = JSON.parse(localStorage.getItem('user'));
 
+  // ✅ Read country data from global scope (already fetched)
+  const allCountries = window.allCountries || [];
+  const countryDetails = allCountries.find(
+    (c) => c.name?.toLowerCase() === post.country?.toLowerCase()
+  );
+
   useEffect(() => {
     fetchLikeCounts(post.id)
       .then(({ likes, dislikes, userReaction }) => {
@@ -69,8 +75,12 @@ const Post = ({ post, showActions = false, isFollowing, onFollowToggle }) => {
       )}
 
       <div className="post-header">
-        <span className="flag">{post.flag}</span>
-        <span className="country">{post.country}</span>
+        <div className="country-section">
+          {countryDetails?.flag && (
+            <img src={countryDetails.flag} alt="flag" className="country-flag" />
+          )}
+          <span className="country">{post.country}</span>
+        </div>
         <span className="username">{post.username}</span>
         {currentUser && currentUser.id !== post.user_id && (
           <button className={`follow-btn ${isFollowing ? 'unfollow' : ''}`} onClick={handleFollowClick}>
@@ -89,6 +99,14 @@ const Post = ({ post, showActions = false, isFollowing, onFollowToggle }) => {
         <h3>{post.title}</h3>
         <p className="date">{post.date}</p>
         <p>{post.content}</p>
+
+        {countryDetails && (
+          <div className="country-details-box">
+            <p><strong>Capital:</strong> {countryDetails.capital}</p>
+            <p><strong>Currency:</strong> {countryDetails.currency}</p>
+            <p><strong>Languages:</strong> {countryDetails.languages?.join(', ')}</p>
+          </div>
+        )}
 
         <div className="reactions">
           <button

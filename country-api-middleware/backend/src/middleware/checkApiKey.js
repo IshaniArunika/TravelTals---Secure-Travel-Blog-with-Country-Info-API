@@ -49,7 +49,7 @@ module.exports = function (req, res, next) {
                 });
             }
 
-            // ✅ Log usage only for /api/country
+            //  Log usage only for /api/country
             if (req.originalUrl.startsWith('/api/country')) {
                 db.run(`
                     INSERT INTO api_usage (user_id, api_key, endpoint, timestamp)

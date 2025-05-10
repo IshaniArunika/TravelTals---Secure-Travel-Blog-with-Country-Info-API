@@ -8,18 +8,53 @@
   padding-bottom: 20px;
 }
 
+/* --- Header --- */
 .post-header {
   display: flex;
   justify-content: space-between;
   background-color: #f4f4f4;
   padding: 10px 15px;
   font-weight: 600;
+  align-items: center;
 }
 
-.flag {
-  font-size: 20px;
+/* Country with flag and popup */
+.country-section {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
 }
 
+.country-flag {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 8px;
+  border: 1px solid #ddd;
+}
+
+.country {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.country-popup {
+  position: absolute;
+  top: 38px;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px 12px;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  border-radius: 6px;
+  z-index: 10;
+  width: max-content;
+}
+
+/* --- Image --- */
 .post-image {
   width: 100%;
   height: auto;
@@ -27,6 +62,7 @@
   display: block;
 }
 
+/* --- Body --- */
 .post-body {
   padding: 15px;
 }
@@ -43,18 +79,37 @@
 }
 
 .reactions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
   margin-top: 10px;
 }
 
-.reactions button {
-  margin-right: 10px;
-  padding: 6px 10px;
-  border: none;
+.reaction-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   background: none;
-  cursor: pointer;
+  border: none;
   font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  color: #444;
 }
 
+.reaction-btn:hover {
+  transform: scale(1.05);
+}
+
+.reaction-btn.active-like {
+  color: #007bff;
+}
+
+.reaction-btn.active-dislike {
+  color: #007bff;
+}
+
+/* --- Edit/Delete Controls --- */
 .post-controls {
   position: absolute;
   top: 50px;
@@ -95,39 +150,8 @@
   background-color: rgba(220, 53, 69, 0.1);
   transform: scale(1.1);
 }
- 
 
-.reactions {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.reaction-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease;
-  color: #444;
-}
-
-.reaction-btn:hover {
-  transform: scale(1.05);
-}
-
-.reaction-btn.active-like {
-  color: #007bff;
-}
-
-.reaction-btn.active-dislike {
-  color:  #007bff;
-}
-
+/* --- Follow Button --- */
 .follow-btn {
   margin-left: 12px;
   padding: 4px 14px;
