@@ -9,13 +9,11 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the rest of the app's source code
+COPY ./public ./public 
 COPY ./src ./src 
-COPY ./app.js .
-COPY ./countriesV3.1.json .
-
 
 # Expose app port (change if necessary)
-EXPOSE 5000
+EXPOSE 3001
 
 # Start the application
 CMD ["npm", "start"]

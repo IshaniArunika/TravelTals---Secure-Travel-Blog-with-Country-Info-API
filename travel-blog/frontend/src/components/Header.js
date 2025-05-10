@@ -1,12 +1,23 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MdAccountCircle } from 'react-icons/md';
-import '../styles/header.css';
+import { FaSearch } from 'react-icons/fa';
 import { BiWorld } from "react-icons/bi";
- 
+import '../styles/header.css';
+
 const Header = ({ onAuthClick, active }) => {
   const location = useLocation();
   const path = location.pathname;
+
+  const scrollToFilter = () => {
+  const element = document.getElementById('filter-section');
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    console.warn("Filter section not found");
+  }
+};
+
 
   return (
     <header className="header">
@@ -29,6 +40,9 @@ const Header = ({ onAuthClick, active }) => {
           onClick={() => onAuthClick('register')}
         >
           Register
+        </span>
+                <span className="nav-item" onClick={scrollToFilter} title="Jump to Filter">
+          <FaSearch />
         </span>
         <Link
           to="/profile"

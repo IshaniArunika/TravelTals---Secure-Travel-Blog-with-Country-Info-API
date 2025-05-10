@@ -392,3 +392,9 @@
   }
 
 }
+
+.date {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 4px;
+}

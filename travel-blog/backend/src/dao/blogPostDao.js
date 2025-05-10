@@ -2,26 +2,27 @@ const db = require('../config/db');
 
 const blogPostDao = {
   createPost: (post) => {
-    const sql = `
-      INSERT INTO blog_posts (user_id, title, content, country, date_of_visit, image_url)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `;
-    const params = [
-      post.user_id,
-      post.title,
-      post.content,
-      post.country,
-      post.date_of_visit,
-      post.image_url
-    ];
+  const sql = `
+    INSERT INTO blog_posts (user_id, title, content, country, date_of_visit, image_url, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+  `;
+  const params = [
+    post.user_id,
+    post.title,
+    post.content,
+    post.country,
+    post.date_of_visit,
+    post.image_url
+  ];
 
-    return new Promise((resolve, reject) => {
-      db.run(sql, params, function (err) {
-        if (err) return reject(err);
-        resolve(this.lastID);
-      });
+  return new Promise((resolve, reject) => {
+    db.run(sql, params, function (err) {
+      if (err) return reject(err);
+      resolve(this.lastID);
     });
-  },
+  });
+},
+
 
   getPostById: (id) => {
     const sql = `SELECT * FROM blog_posts WHERE id = ?`;
@@ -108,46 +109,60 @@ const blogPostDao = {
   }
   ,
 
-  searchPosts: (filters, page, limit) => {
-    let sql = `
-      SELECT blog_posts.*, users.username
-      FROM blog_posts
-      JOIN users ON blog_posts.user_id = users.id
-      WHERE 1=1
+  searchPosts: (filters, page, limit, sortBy = 'created_at') => {
+  let sql = `
+    SELECT blog_posts.*, users.username
+    FROM blog_posts
+    JOIN users ON blog_posts.user_id = users.id
+    WHERE 1=1
+  `;
+  const params = [];
+
+  if (filters.username) {
+    sql += ` AND LOWER(users.username) LIKE ?`;
+    params.push(`%${filters.username.toLowerCase()}%`);
+  }
+
+  if (filters.country) {
+    sql += ` AND LOWER(blog_posts.country) LIKE ?`;
+    params.push(`%${filters.country.toLowerCase()}%`);
+  }
+
+  let orderClause = 'ORDER BY blog_posts.created_at DESC'; // Default
+  if (sortBy === 'likes') {
+    orderClause = `
+      ORDER BY (
+        SELECT COUNT(*) FROM likes 
+        WHERE likes.post_id = blog_posts.id AND type = 'like'
+      ) DESC
     `;
-    const params = [];
-  
-    // console.log("Search filters:", filters);
-  
-    if (filters.username) {
-      sql += ` AND LOWER(users.username) LIKE ?`;
-      params.push(`%${filters.username.toLowerCase()}%`);
-    }
-  
-    if (filters.country) {
-      sql += ` AND LOWER(blog_posts.country) LIKE ?`;
-      params.push(`%${filters.country.toLowerCase()}%`);
-    }
-  
-    sql += ` ORDER BY blog_posts.created_at DESC LIMIT ? OFFSET ?`;
-    params.push(limit, (page - 1) * limit);
-  
-    // console.log("Final SQL:", sql);
-    // console.log("Query Params:", params);
-  
-    return new Promise((resolve, reject) => {
-      db.all(sql, params, (err, rows) => {
-        if (err) {
-          console.error("DB Error:", err);
-          return reject(err);
-        }
-        console.log("Rows returned:", rows.length);
-        resolve(rows);
+  } else if (sortBy === 'comments') {
+    orderClause = `
+      ORDER BY (
+        SELECT COUNT(*) FROM comments 
+        WHERE comments.post_id = blog_posts.id
+      ) DESC
+    `;
+  }
+
+  const countSql = `SELECT COUNT(*) as total FROM (${sql})`;
+  const dataSql = `${sql} ${orderClause} LIMIT ? OFFSET ?`;
+  const dataParams = [...params, limit, (page - 1) * limit];
+
+  return new Promise((resolve, reject) => {
+    db.get(countSql, params, (err, countResult) => {
+      if (err) return reject(err);
+      const total = countResult.total;
+      const totalPages = Math.ceil(total / limit);
+
+      db.all(dataSql, dataParams, (err, rows) => {
+        if (err) return reject(err);
+        resolve({ posts: rows, totalPages });
       });
     });
-  }
-  
-  
+  });
+}
+ 
 };
 
 module.exports = blogPostDao;

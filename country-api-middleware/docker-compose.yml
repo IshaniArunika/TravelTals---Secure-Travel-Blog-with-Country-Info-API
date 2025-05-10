@@ -2,14 +2,14 @@ version: '3'
 services:
   backend:
     build: 
-      context: ./country-api-middleware
+      context: ./backend
       dockerfile: Dockerfile
     container_name: backend
     restart: unless-stopped 
     ports:
       - "4000:4000"
     volumes:
-    - ./country-api-middleware/data:/app/data
+    - ./backend/data:/app/data
 
 
   frontend:

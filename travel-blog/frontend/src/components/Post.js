@@ -1,4 +1,3 @@
-// Post.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/post.css';
@@ -98,16 +97,27 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
       <div className="post-body">
         <h3>{post.title}</h3>
         <p className="date">
-  Visited on: {
-    post.date_of_visit
-      ? new Date(post.date_of_visit).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })
-      : 'Not available'
-  }
-</p>
+          Visited on: {
+            post.date_of_visit
+              ? new Date(post.date_of_visit).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })
+              : 'Not available'
+          }
+        </p>
+        <p className="date">
+          Posted on: {
+            post.created_at
+              ? new Date(post.created_at).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })
+              : 'Not available'
+          }
+        </p>
 
         <p className={`post-content ${expanded ? 'expanded' : ''}`}>
           {post.content}
@@ -117,7 +127,6 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
             {expanded ? 'See less' : 'See more'}
           </button>
         )}
-
 
         {countryDetails && (
           <div className="country-details-box">

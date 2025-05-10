@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import Header from './components/Header';
 import AppRoutes from './routes/appRoutes';
 import Login from './components/Login';
@@ -9,6 +9,7 @@ function App() {
   const [authModal, setAuthModal] = useState(null);
   const [activePage, setActivePage] = useState('home');
   const [allCountries, setAllCountries] = useState([]);
+ 
 
   useEffect(() => {
     const init = async () => {
@@ -36,7 +37,7 @@ function App() {
 
   return (
     <div className="App">
-      <Header onAuthClick={handleAuthClick} active={activePage} />
+      <Header onAuthClick={handleAuthClick} active={activePage}  />
       <AppRoutes allCountries={allCountries} />
       {authModal === 'login' && <Login onClose={handleCloseModal} />}
       {authModal === 'register' && <Register onClose={handleCloseModal} />}
