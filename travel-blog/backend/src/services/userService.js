@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const UserDao = require('../dao/userDao');
-const UsageDao = require('../dao/usageDao');
+ 
 
 class UserService {
     async createUser(username, email, password, role = 'user', plan = 'free') {
@@ -37,7 +37,7 @@ class UserService {
     async getUsersWithUsageByRole(role) {
         const users = await UserDao.getUsersByRole(role);
         const userIds = users.map(u => u.id);
-        const usageMap = await UsageDao.getUsageCountForUsers(userIds);
+        
       
         return users.map(user => ({
           ...user,

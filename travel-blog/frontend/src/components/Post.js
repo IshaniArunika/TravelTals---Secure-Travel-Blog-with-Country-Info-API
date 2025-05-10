@@ -1,3 +1,4 @@
+// Post.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/post.css';
@@ -7,17 +8,16 @@ import { fetchLikeCounts, likePost } from '../services/likeService';
 import { deletePost } from '../services/postService';
 import { followUser, unfollowUser } from '../services/followService';
 
-const Post = ({ post, showActions = false, isFollowing, onFollowToggle }) => {
+const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFollowToggle }) => {
   const navigate = useNavigate();
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
   const [userReaction, setUserReaction] = useState(null);
   const currentUser = JSON.parse(localStorage.getItem('user'));
+  const [expanded, setExpanded] = useState(false);
 
-  // ✅ Read country data from global scope (already fetched)
-  const allCountries = window.allCountries || [];
   const countryDetails = allCountries.find(
-    (c) => c.name?.toLowerCase() === post.country?.toLowerCase()
+    (c) => c.name?.toLowerCase().trim() === post.country?.toLowerCase().trim()
   );
 
   useEffect(() => {
@@ -97,8 +97,27 @@ const Post = ({ post, showActions = false, isFollowing, onFollowToggle }) => {
 
       <div className="post-body">
         <h3>{post.title}</h3>
-        <p className="date">{post.date}</p>
-        <p>{post.content}</p>
+        <p className="date">
+  Visited on: {
+    post.date_of_visit
+      ? new Date(post.date_of_visit).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
+      : 'Not available'
+  }
+</p>
+
+        <p className={`post-content ${expanded ? 'expanded' : ''}`}>
+          {post.content}
+        </p>
+        {post.content.length > 300 && (
+          <button className="see-more-btn" onClick={() => setExpanded(!expanded)}>
+            {expanded ? 'See less' : 'See more'}
+          </button>
+        )}
+
 
         {countryDetails && (
           <div className="country-details-box">

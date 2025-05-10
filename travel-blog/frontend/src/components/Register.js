@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import '../styles/authForm.css';
 import { registerUser } from '../services/authService';
 import { IoClose } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
 const Register = ({ onClose }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
     if (!username || !email || !password || !confirm) {
@@ -24,6 +26,8 @@ const Register = ({ onClose }) => {
       localStorage.setItem('user', JSON.stringify(res.user));
       alert('Registered successfully!');
       onClose(); // Close modal
+      navigate('/')
+      window.location.reload();
     } catch (err) {
       console.error(err);
       alert('Registration failed. Try again.');

@@ -10,26 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
     role TEXT NOT NULL DEFAULT 'user',
     plan TEXT NOT NULL DEFAULT 'free'
 );
-
--- API key management table: Manages API keys issued to users
-CREATE TABLE IF NOT EXISTS api_keys (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    api_key TEXT UNIQUE NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    expires_at DATETIME NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- API usage logging table: Logs API usage details
-CREATE TABLE IF NOT EXISTS api_usage (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    api_key TEXT NOT NULL,
-    endpoint TEXT NOT NULL,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+ 
 
 -- Blog posts table: Stores user-generated blog posts about visited countries
 CREATE TABLE IF NOT EXISTS blog_posts (

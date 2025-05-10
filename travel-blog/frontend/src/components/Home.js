@@ -1,3 +1,4 @@
+// Home.js
 import React, { useEffect, useState } from 'react';
 import '../styles/home.css';
 import Post from './Post';
@@ -7,8 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import { getAllPosts, searchPosts } from '../services/postService';
 import { isFollowingUser } from '../services/followService';
 import { fetchLikeCounts } from '../services/likeService';
+import CountrySelect from './CountrySelect';
 
-const Home = () => {
+const Home = ({ allCountries }) => {
   const [posts, setPosts] = useState([]);
   const [followedUsers, setFollowedUsers] = useState({});
   const [filterCountry, setFilterCountry] = useState('');
@@ -54,10 +56,7 @@ const Home = () => {
 
   const handleFilter = async () => {
     try {
-      const filtered = await searchPosts({
-        username: filterUser,
-        country: filterCountry
-      });
+      const filtered = await searchPosts({ username: filterUser, country: filterCountry });
       const enriched = await enrichPosts(filtered);
       setPosts(enriched);
       const map = await loadFollowStatus(enriched);
@@ -97,28 +96,26 @@ const Home = () => {
         <div className="hero-content">
           <h1>Welcome to TravelTales</h1>
           <p>Discover. Share. Inspire.</p>
- 
         </div>
       </section>
 
       {showFilter && (
         <section className="filter-bar">
-          <input
-            type="text"
-            placeholder="Filter by country"
+          <CountrySelect
             value={filterCountry}
-            onChange={(e) => setFilterCountry(e.target.value)}
+             onChange={setFilterCountry}
+            countryList={allCountries.map(c => c.name)}
           />
+
           <input
             type="text"
             placeholder="Filter by username"
             value={filterUser}
             onChange={(e) => setFilterUser(e.target.value)}
           />
-          {!filtersApplied && (
+          {!filtersApplied ? (
             <button className="filter-btn" onClick={handleFilter}>Filter</button>
-          )}
-          {filtersApplied && (
+          ) : (
             <button className="filter-btn" onClick={handleClear}>Clear Filters</button>
           )}
         </section>
@@ -131,11 +128,10 @@ const Home = () => {
             post={post}
             isFollowing={!!followedUsers[post.user_id]}
             onFollowToggle={handleFollowToggle}
+            allCountries={allCountries}
           />
         ))}
       </section>
-
-       
 
       <div className="add-icon" onClick={() => navigate('/add-post')}>
         <IoIosAddCircle size={40} />

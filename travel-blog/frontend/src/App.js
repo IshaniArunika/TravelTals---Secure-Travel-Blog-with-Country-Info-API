@@ -13,8 +13,8 @@ function App() {
   useEffect(() => {
     const init = async () => {
       await loginToMiddleware();
-      const data = await getAllCountries();
-      setAllCountries(data);
+      const res = await getAllCountries();
+      setAllCountries(res.countries);
     };
     init();
   }, []);

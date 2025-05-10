@@ -3,13 +3,13 @@ import Home from '../components/Home';
 import AddPost from '../components/AddPost';
 import ProfilePage from '../components/ProfilePage';
 
-const AppRoutes = () => {
+const AppRoutes = ({ allCountries }) => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/add-post" element={<AddPost />} />
-      <Route path="/edit-post/:id" element={<AddPost />} />  
-      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/" element={<Home allCountries={allCountries} />} />
+      <Route path="/add-post" element={<AddPost allCountries={allCountries} />} />
+      <Route path="/edit-post/:id" element={<AddPost allCountries={allCountries} />} />
+      <Route path="/profile" element={<ProfilePage allCountries={allCountries} />} />
     </Routes>
   );
 };

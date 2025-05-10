@@ -1,3 +1,4 @@
+// ProfilePage.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllPosts } from '../services/postService';
@@ -5,7 +6,7 @@ import { getFollowers, getFollowing } from '../services/followService';
 import '../styles/profilePage.css';
 import Post from './Post';
 
-const ProfilePage = () => {
+const ProfilePage = ({ allCountries }) => {
   const [user, setUser] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
   const [followers, setFollowers] = useState(0);
@@ -15,13 +16,12 @@ const ProfilePage = () => {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     if (!storedUser) {
-      navigate('/'); // redirect to homepage if not logged in
+      navigate('/');
       return;
     }
 
     setUser(storedUser);
 
-    // fetch user's posts
     getAllPosts()
       .then(data => {
         const filtered = data.filter(post => post.user_id === storedUser.id);
@@ -29,7 +29,6 @@ const ProfilePage = () => {
       })
       .catch(err => console.error('Failed to fetch posts:', err));
 
-    // fetch follower/following count
     getFollowers(storedUser.id)
       .then(data => setFollowers(data.length))
       .catch(err => console.error('Failed to fetch followers:', err));
@@ -48,22 +47,17 @@ const ProfilePage = () => {
 
   return (
     <div className="profile-container">
-      <div className="profile-banner">
-        <div className="banner-overlay"></div>
-      </div>
-
+      <div className="profile-banner"><div className="banner-overlay"></div></div>
       <div className="profile-header">
         <div className="profile-avatar">
           <div className="avatar-placeholder">
             {user.username?.charAt(0).toUpperCase() || 'U'}
           </div>
         </div>
-
         <div className="user-info">
           <h2>{user.username}</h2>
           <p className="user-email">{user.email}</p>
         </div>
-
         <div className="profile-actions">
           <button className="logout-button" onClick={handleLogout}>Logout</button>
           <button className="add-post-button" onClick={() => navigate('/add-post')}>Add Post</button>
@@ -71,18 +65,9 @@ const ProfilePage = () => {
       </div>
 
       <div className="profile-stats">
-        <div className="stat">
-          <span className="stat-number">{userPosts.length}</span>
-          <span className="stat-label">Posts</span>
-        </div>
-        <div className="stat">
-          <span className="stat-number">{followers}</span>
-          <span className="stat-label">Followers</span>
-        </div>
-        <div className="stat">
-          <span className="stat-number">{following}</span>
-          <span className="stat-label">Following</span>
-        </div>
+        <div className="stat"><span className="stat-number">{userPosts.length}</span><span className="stat-label">Posts</span></div>
+        <div className="stat"><span className="stat-number">{followers}</span><span className="stat-label">Followers</span></div>
+        <div className="stat"><span className="stat-number">{following}</span><span className="stat-label">Following</span></div>
       </div>
 
       <div className="posts-section">
@@ -90,12 +75,10 @@ const ProfilePage = () => {
         <div className="posts-container">
           {userPosts.length > 0 ? (
             userPosts.map(post => (
-              <Post key={post.id} post={post} showActions={true} />
+              <Post key={post.id} post={post} showActions={true} allCountries={allCountries} />
             ))
           ) : (
-            <p style={{ color: '#777', textAlign: 'center' }}>
-              You haven’t posted anything yet.
-            </p>
+            <p style={{ color: '#777', textAlign: 'center' }}>You haven’t posted anything yet.</p>
           )}
         </div>
       </div>

@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import '../styles/authForm.css';
 import { loginUser } from '../services/authService';
 import { IoClose } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -18,6 +20,8 @@ const Login = ({ onClose }) => {
       localStorage.setItem('user', JSON.stringify(res.user));
       alert('Login successful!');
       onClose(); // Close modal
+      navigate('/');
+      window.location.reload();
     } catch (err) {
       console.error(err);
       alert('Login failed. Check your credentials.');
