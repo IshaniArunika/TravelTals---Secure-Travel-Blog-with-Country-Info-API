@@ -135,10 +135,10 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
 
         <div className="reactions">
           <button className={`reaction-btn ${userReaction === 'like' ? 'active-like' : ''}`} onClick={() => handleReaction('like')}>
-            <AiFillLike size={22} /> {likes}
+            <AiFillLike size={22} color={userReaction === 'like' ? '#007bff' : '#888'} /> {likes}
           </button>
           <button className={`reaction-btn ${userReaction === 'dislike' ? 'active-dislike' : ''}`} onClick={() => handleReaction('dislike')}>
-            <AiFillDislike size={22} /> {dislikes}
+            <AiFillDislike size={22} color={userReaction === 'dislike' ? '#dc3545' : '#888'} /> {dislikes}
           </button>
           <button className="reaction-btn" onClick={() => setShowComments(!showComments)}>
             <LiaCommentSolid size={22} /> {commentCount}
@@ -146,7 +146,7 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
         </div>
 
         {showComments && (
-          <CommentSection postId={post.id} user={currentUser} />
+          <CommentSection postId={post.id} user={currentUser} setCommentCount={setCommentCount} />
         )}
       </div>
     </div>

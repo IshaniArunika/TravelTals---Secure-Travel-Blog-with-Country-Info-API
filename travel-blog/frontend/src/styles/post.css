@@ -365,6 +365,19 @@
     padding: 6px 10px;
   }
   
+.reaction-btn svg {
+  transition: color 0.2s ease;
+}
+
+.reaction-btn.active-like svg {
+  color: #007bff; /* blue for like */
+}
+
+.reaction-btn.active-dislike svg {
+  color: #dc3545; /* red for dislike */
+}
+
+
   .follow-btn {
     padding: 5px 12px;
     font-size: 13px;
