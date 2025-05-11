@@ -14,7 +14,7 @@ export const fetchLikeCounts = async (postId) => {
   return res.data; // { likes, dislikes, userReaction }
 };
 
-//  Toggle like/dislike
+//    like/dislike
 export const likePost = async (postId, type) => {
   const csrfToken = getCookie('csrf-token');
   if (!csrfToken) throw new Error('Missing CSRF token');

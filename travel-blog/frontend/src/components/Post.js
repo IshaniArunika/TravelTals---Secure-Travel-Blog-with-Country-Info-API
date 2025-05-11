@@ -3,17 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/post.css';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { AiFillLike, AiFillDislike } from 'react-icons/ai';
+import { LiaCommentSolid } from 'react-icons/lia';
 import { fetchLikeCounts, likePost } from '../services/likeService';
 import { deletePost } from '../services/postService';
 import { followUser, unfollowUser } from '../services/followService';
+import { getCommentCountByPostId } from '../services/commentService';
+import CommentSection from './CommentSection';
 
 const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFollowToggle }) => {
   const navigate = useNavigate();
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
   const [userReaction, setUserReaction] = useState(null);
+  const [commentCount, setCommentCount] = useState(0);
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const [expanded, setExpanded] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   const countryDetails = allCountries.find(
     (c) => c.name?.toLowerCase().trim() === post.country?.toLowerCase().trim()
@@ -27,6 +32,10 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
         setUserReaction(userReaction);
       })
       .catch(err => console.error('Failed to fetch like counts:', err));
+
+    getCommentCountByPostId(post.id)
+      .then(({ count }) => setCommentCount(count))
+      .catch(err => console.error('Failed to get comment count:', err));
   }, [post.id]);
 
   const handleReaction = async (type) => {
@@ -97,26 +106,14 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
       <div className="post-body">
         <h3>{post.title}</h3>
         <p className="date">
-          Visited on: {
-            post.date_of_visit
-              ? new Date(post.date_of_visit).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })
-              : 'Not available'
-          }
+          Visited on: {post.date_of_visit
+            ? new Date(post.date_of_visit).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            : 'Not available'}
         </p>
         <p className="date">
-          Posted on: {
-            post.created_at
-              ? new Date(post.created_at).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })
-              : 'Not available'
-          }
+          Posted on: {post.created_at
+            ? new Date(post.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            : 'Not available'}
         </p>
 
         <p className={`post-content ${expanded ? 'expanded' : ''}`}>
@@ -137,19 +134,20 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
         )}
 
         <div className="reactions">
-          <button
-            className={`reaction-btn ${userReaction === 'like' ? 'active-like' : ''}`}
-            onClick={() => handleReaction('like')}
-          >
+          <button className={`reaction-btn ${userReaction === 'like' ? 'active-like' : ''}`} onClick={() => handleReaction('like')}>
             <AiFillLike size={22} /> {likes}
           </button>
-          <button
-            className={`reaction-btn ${userReaction === 'dislike' ? 'active-dislike' : ''}`}
-            onClick={() => handleReaction('dislike')}
-          >
+          <button className={`reaction-btn ${userReaction === 'dislike' ? 'active-dislike' : ''}`} onClick={() => handleReaction('dislike')}>
             <AiFillDislike size={22} /> {dislikes}
           </button>
+          <button className="reaction-btn" onClick={() => setShowComments(!showComments)}>
+            <LiaCommentSolid size={22} /> {commentCount}
+          </button>
         </div>
+
+        {showComments && (
+          <CommentSection postId={post.id} user={currentUser} />
+        )}
       </div>
     </div>
   );
