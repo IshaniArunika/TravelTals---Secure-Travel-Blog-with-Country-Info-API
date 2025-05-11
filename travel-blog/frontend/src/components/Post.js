@@ -16,9 +16,9 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
   const [dislikes, setDislikes] = useState(0);
   const [userReaction, setUserReaction] = useState(null);
   const [commentCount, setCommentCount] = useState(0);
-  const currentUser = JSON.parse(localStorage.getItem('user'));
   const [expanded, setExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const currentUser = JSON.parse(localStorage.getItem('user'));
 
   const countryDetails = allCountries.find(
     (c) => c.name?.toLowerCase().trim() === post.country?.toLowerCase().trim()
@@ -26,25 +26,31 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
 
   useEffect(() => {
     fetchLikeCounts(post.id)
-      .then(({ likes, dislikes, userReaction }) => {
+      .then(({ likes, dislikes }) => {
         setLikes(likes);
         setDislikes(dislikes);
-        setUserReaction(userReaction);
+
+        // Retrieve saved reaction for this post from localStorage
+        const savedReaction = localStorage.getItem(`reaction-${currentUser?.id}-${post.id}`);
+        setUserReaction(savedReaction || null);
       })
       .catch(err => console.error('Failed to fetch like counts:', err));
 
     getCommentCountByPostId(post.id)
       .then(({ count }) => setCommentCount(count))
       .catch(err => console.error('Failed to get comment count:', err));
-  }, [post.id]);
+  }, [post.id,currentUser?.id]);
 
   const handleReaction = async (type) => {
     try {
       await likePost(post.id, type);
-      const { likes, dislikes, userReaction } = await fetchLikeCounts(post.id);
+      const { likes, dislikes } = await fetchLikeCounts(post.id);
       setLikes(likes);
       setDislikes(dislikes);
-      setUserReaction(userReaction);
+
+      // Save user reaction to localStorage
+      localStorage.setItem(`reaction-${currentUser?.id}-${post.id}`, type);
+      setUserReaction(type);
     } catch (err) {
       alert('You must be logged in to react.');
     }
@@ -106,14 +112,10 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
       <div className="post-body">
         <h3>{post.title}</h3>
         <p className="date">
-          Visited on: {post.date_of_visit
-            ? new Date(post.date_of_visit).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-            : 'Not available'}
+          Visited on: {post.date_of_visit ? new Date(post.date_of_visit).toLocaleDateString() : 'Not available'}
         </p>
         <p className="date">
-          Posted on: {post.created_at
-            ? new Date(post.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-            : 'Not available'}
+          Posted on: {post.created_at ? new Date(post.created_at).toLocaleDateString() : 'Not available'}
         </p>
 
         <p className={`post-content ${expanded ? 'expanded' : ''}`}>
@@ -134,13 +136,22 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
         )}
 
         <div className="reactions">
-          <button className={`reaction-btn ${userReaction === 'like' ? 'active-like' : ''}`} onClick={() => handleReaction('like')}>
-            <AiFillLike size={22} color={userReaction === 'like' ? '#007bff' : '#888'} /> {likes}
+          <button
+            className={`reaction-btn ${userReaction === 'like' ? 'active-like' : ''}`}
+            onClick={() => handleReaction('like')}
+          >
+            <AiFillLike size={22} /> {likes}
           </button>
-          <button className={`reaction-btn ${userReaction === 'dislike' ? 'active-dislike' : ''}`} onClick={() => handleReaction('dislike')}>
-            <AiFillDislike size={22} color={userReaction === 'dislike' ? '#dc3545' : '#888'} /> {dislikes}
+          <button
+            className={`reaction-btn ${userReaction === 'dislike' ? 'active-dislike' : ''}`}
+            onClick={() => handleReaction('dislike')}
+          >
+            <AiFillDislike size={22} /> {dislikes}
           </button>
-          <button className="reaction-btn" onClick={() => setShowComments(!showComments)}>
+          <button
+            className="reaction-btn"
+            onClick={() => setShowComments(!showComments)}
+          >
             <LiaCommentSolid size={22} /> {commentCount}
           </button>
         </div>

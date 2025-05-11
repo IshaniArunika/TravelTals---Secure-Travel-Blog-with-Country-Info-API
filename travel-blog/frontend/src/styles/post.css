@@ -411,3 +411,19 @@
   color: #777;
   margin-bottom: 4px;
 }
+.reaction-btn.active-like {
+  color: #007bff;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.reaction-btn.active-dislike {
+  color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.1);
+}
+.reaction-btn.active-like {
+  color: #007bff; /* Blue for liked */
+}
+
+.reaction-btn.active-dislike {
+  color: #dc3545; /* Red for disliked */
+}
