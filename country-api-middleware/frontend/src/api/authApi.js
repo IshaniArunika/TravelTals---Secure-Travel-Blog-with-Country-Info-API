@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:4000/auth';
+const BASE_URL = 'http://localhost:49100/auth';
 
 export const registerUser = async ({ username, email, password }) => {
   const response = await axios.post(`${BASE_URL}/register`, {

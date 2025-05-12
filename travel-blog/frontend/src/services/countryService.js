@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:4000/api';
-const LOGIN_URL = 'http://localhost:4000/auth/login';
+const BASE_URL = 'http://localhost:49100/api';
+const LOGIN_URL = 'http://localhost:49100/auth/login';
 
 let csrfToken = null;
 let apiKey = null;

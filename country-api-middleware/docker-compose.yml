@@ -7,7 +7,7 @@ services:
     container_name: backend
     restart: unless-stopped 
     ports:
-      - "49100:4000"
+      - "49100:49100"
     volumes:
     - ./backend/data:/app/data
 

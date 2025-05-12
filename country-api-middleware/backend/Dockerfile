@@ -15,7 +15,7 @@ COPY ./countriesV3.1.json .
 
 
 # Expose app port (change if necessary)
-EXPOSE 4000
+EXPOSE 49100
 
 # Start the application
 CMD ["npm", "start"]

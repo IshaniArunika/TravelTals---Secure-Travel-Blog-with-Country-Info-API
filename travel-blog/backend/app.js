@@ -22,7 +22,7 @@ const app = express();
 app.use(express.json()); // Parses incoming JSON requests
 app.use(cookieParser());
 app.use(cors({
-    origin: 'http://localhost:3001', // Allow only frontend
+    origin: ['http://localhost:3000', 'http://localhost:3001'], // Allow only frontend
     credentials: true                // Enable sending cookies
   })); // Allows requests from different domains
 app.use(express.urlencoded({ extended: true })); // support form data

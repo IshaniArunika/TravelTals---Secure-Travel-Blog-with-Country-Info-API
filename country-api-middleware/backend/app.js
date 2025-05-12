@@ -7,7 +7,7 @@ require('./src/config/db');
 
 dotenv.config();
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 49100;
 const apiRouter = require('./src/routes/apiRoutes');
 const authRouter = require('./src/routes/authRoutes');
 const userRouter = require('./src/routes/userRouter')
@@ -18,7 +18,7 @@ const app = express();
 app.use(express.json()); // Parses incoming JSON requests
 app.use(cookieParser());
 app.use(cors({
-    origin: 'http://localhost:3000', // Allow only frontend
+    origin: ['http://localhost:3000','http://localhost:3001'], // Allow only frontend
     credentials: true                // Enable sending cookies
   })); // Allows requests from different domains
 

@@ -1,129 +1,89 @@
-CountryAPI Middleware Service
-=============================
+# TravelTales – Secure Travel Blog with Country API Integration
 
-This project is a secure API middleware service developed for the 6COSC022W Advanced Server Side Coursework 1 (2024/25) at the University of Westminster. It acts as an intermediary between clients and the public RestCountries API by providing filtered, secured, and authenticated access to country information.
+## Project Overview
 
-Overview
---------
+TravelTales is a full-stack travel blogging platform that lets users share travel experiences while securely searching for country data. It integrates with a custom middleware API that filters data from RestCountries.com, providing essential details like country name, currency, capital, languages, and flag.
 
-The middleware retrieves data from https://restcountries.com and returns only essential information:
+## Features
 
-- Country name
-- Capital city
-- Currency details
-- Spoken languages
-- National flag
+### Core Functionalities
+- User registration and login with hashed passwords
+- Secure API key generation and usage tracking
+- RESTful API to fetch country information
+- Protected routes using JWT and CSRF tokens
+- Create, like, dislike, and comment on posts
+- Admin dashboard with usage analytics and user management
+- Fully containerized using Docker
 
-The application includes full authentication, session management, API key handling, admin dashboard, and Docker-based deployment.
+## Security Features
 
-Features
---------
+- JWT Authentication stored in HttpOnly cookies
+- CSRF Protection via the Double Submit Cookie pattern
+- Passwords securely hashed with bcrypt
+- Login lockout after multiple failed attempts
+- Role-based access control (admin/user)
+- Rate limiting and validation on API endpoints
 
-Core API Functionality
-- RESTful integration with RestCountries.com
-- Endpoints to fetch filtered country data
-- Consistent and well-formatted JSON responses
-- Robust error handling
+## Tech Stack
 
-Security
-- JWT-based authentication with HttpOnly cookies
-- CSRF protection (Double Submit Cookie pattern)
-- Password hashing with bcrypt
-- Role-based access (admin and user)
-- Input validation and secure session management
-
-Admin Functionality
-- Admin login and protected dashboard
-- View all registered users and their API usage
-- Modify user plans (free/paid)
-- View statistics: total users, API keys issued, active users, and percentage on paid plans
-
-API Key Management
-- Generate and revoke API keys per user
-- API key required for protected endpoints
-- Usage tracking and rate enforcement
-
-Database (SQLite)
-- Users, API keys, and API usage stored securely
-- 3NF relational structure
-- Tracks daily API usage per user
-
-Deployment
-- Dockerized backend and frontend
-- Single-command local deployment using Docker Compose
-
-Technologies
-------------
-
-- Backend: Node.js, Express
+- Backend: Node.js, Express.js, SQLite, JWT, CSRF
 - Frontend: Angular
-- Database: SQLite
-- Auth: JWT, bcrypt, CSRF
-- Deployment: Docker
+- Database: SQLite with Sequelize ORM
+- Containerization: Docker and Docker Compose
 
-Project Structure
------------------
+## Docker Setup
 
-project-root/
-│
-├── backend/
-│   ├── dao/
-│   ├── middleware/
-│   ├── routes/
-│   ├── services/
-│   └── app.js
-│
-├── frontend/
-│   ├── src/
-│   └── angular.json
-│
-├── docker-compose.yml
-├── Dockerfile
-└── README.md
+1. Make sure Docker is installed.
+2. From the project root directory, run:
 
-Setup Instructions
-------------------
-
-Prerequisites
-- Docker Desktop installed
-
-Run with Docker
-
-1. Clone the repository:
-   git clone https://github.com/your-username/Advanced-Server-Side.git
-   cd Advanced-Server-Side
-
-2. Start the application:
    docker-compose up --build
 
-3. Access locally:
-   - Backend API: http://localhost:4000
-   - Frontend UI: http://localhost:3000
+3. Access the application:
+   - Frontend: http://localhost:3001
+   - Backend API: http://localhost:49100/api
 
-Authentication Flow
--------------------
+## Project Structure
 
-- JWT token issued on login and stored in HttpOnly cookie
-- CSRF token issued in readable cookie and sent via header
-- API key must be sent in x-api-key header for secured endpoints
+/frontend
+  - Angular UI for users and admin
+/backend
+  - Express API with routes, services, middleware
+  - SQLite DB and authentication logic
+/docker-compose.yml
 
-Testing
--------
+## API Endpoints
 
-- Postman used for endpoint and security validation
-- Frontend includes role-based navigation and interactive components
+### Auth
+- POST /auth/register
+- POST /auth/login
 
-Submission Checklist
---------------------
+### Posts
+- GET /api/posts
+- POST /api/posts
 
-- Zipped source code
-- Video demonstration
-- README file
-- Docker support for local deployment
+### Country API
+- GET /api/countries?name={country} (Requires API Key)
 
-Author
-------
+### Like/Dislike
+- POST /api/like
+- POST /api/dislike
 
-- Name: Ishani Arunika
-- Module:Advanced Server Side
-- University of Westminster
+### Admin (Protected)
+- GET /admin/stats
+- GET /users/with-usage
+
+## Usage Notes
+
+- After login, JWT and CSRF token are stored in cookies.
+- Use withCredentials: true when making frontend requests.
+- CSRF token must be sent in a custom header, typically x-csrf-token.
+
+## Admin Panel
+
+- View user list and API key usage
+- Analytics: total users, active users, API keys issued, plan types
+- Modify user plans (free/paid)
+
+## License
+
+All content and source code are protected. Unauthorized reuse or distribution is prohibited.
