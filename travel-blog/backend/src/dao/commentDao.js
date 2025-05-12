@@ -4,7 +4,7 @@ const db = require('../config/db');
 const createComment = ({ post_id, user_id, content }) => {
  const sql = `
   INSERT INTO comments (post_id, user_id, content, created_at)
-  VALUES (?, ?, ?, datetime('now', 'localtime'))
+  VALUES (?, ?, ?, datetime('now'))
 `;
 
   const params = [post_id, user_id, content];

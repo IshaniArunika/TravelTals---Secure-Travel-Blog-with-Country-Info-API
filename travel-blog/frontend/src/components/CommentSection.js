@@ -42,6 +42,14 @@ const CommentSection = ({ postId, user, setCommentCount }) => {
     fetchComments();
   }, [fetchComments]);
 
+  const renderCommentTime = (timestamp) => {
+    const date = new Date(timestamp + 'Z');
+    const diffMs = Date.now() - date.getTime();
+    return diffMs < 60000
+      ? 'just now'
+      : formatDistanceToNow(date, { addSuffix: true });
+  };
+
   return (
     <div className="comment-section">
       <h4>Comments</h4>
@@ -57,7 +65,7 @@ const CommentSection = ({ postId, user, setCommentCount }) => {
               <div className="comment-meta">
                 <strong>{c.username}</strong> ·{' '}
                 <span className="comment-time">
-                  {formatDistanceToNow(new Date(c.created_at), { addSuffix: true })}
+                  {renderCommentTime(c.created_at)}
                 </span>
               </div>
               <div className="comment-text">{c.content}</div>

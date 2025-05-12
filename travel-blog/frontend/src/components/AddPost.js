@@ -5,11 +5,12 @@ import {
   getPostById,
   updatePost
 } from '../services/postService';
+import CountrySelect from './CountrySelect'; // same as Home.js
 import '../styles/addPost.css';
 
-const AddPost = () => {
+const AddPost = ({ allCountries }) => {
   const navigate = useNavigate();
-  const { id } = useParams(); // Check if editing
+  const { id } = useParams();
   const isEdit = !!id;
 
   const [title, setTitle] = useState('');
@@ -18,14 +19,12 @@ const AddPost = () => {
   const [date, setDate] = useState('');
   const [image, setImage] = useState(null);
   const [existingImage, setExistingImage] = useState('');
-  const [loading, setLoading] = useState(isEdit); // only show loading for edit
+  const [loading, setLoading] = useState(isEdit);
 
-  // Load post data if in edit mode
   useEffect(() => {
     if (isEdit) {
       getPostById(id)
         .then(data => {
-          console.log("Loaded post:", data); 
           setTitle(data.title);
           setContent(data.content);
           setCountry(data.country);
@@ -92,12 +91,14 @@ const AddPost = () => {
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
-        <input
-          type="text"
-          placeholder="Country"
+
+        {/* ✅ Use CountrySelect like in Home.js */}
+        <CountrySelect
           value={country}
-          onChange={(e) => setCountry(e.target.value)}
+          onChange={setCountry}
+          countryList={allCountries.map(c => c.name)}
         />
+
         <input
           type="date"
           value={date}
@@ -109,7 +110,6 @@ const AddPost = () => {
           onChange={(e) => setImage(e.target.files[0])}
         />
 
-        {/* Show existing image in edit mode */}
         {isEdit && existingImage && (
           <img
             src={`http://localhost:5000${existingImage}`}
