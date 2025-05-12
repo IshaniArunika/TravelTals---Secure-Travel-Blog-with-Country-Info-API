@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5000/comments';
+const BASE_URL = `${process.env.REACT_APP_API_BASE_URL}/comments`;
 
 // Helper to read cookies
 function getCookie(name) {
