@@ -6,11 +6,11 @@ import { AiFillLike, AiFillDislike } from 'react-icons/ai';
 import { LiaCommentSolid } from 'react-icons/lia';
 import { fetchLikeCounts, likePost } from '../services/likeService';
 import { deletePost } from '../services/postService';
-import { followUser, unfollowUser } from '../services/followService';
+import { followUser, unfollowUser, isFollowingUser } from '../services/followService';
 import { getCommentCountByPostId } from '../services/commentService';
 import CommentSection from './CommentSection';
 
-const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFollowToggle }) => {
+const Post = ({ post, allCountries = [], showActions = false, onFollowToggle }) => {
   const navigate = useNavigate();
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
@@ -18,6 +18,7 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
   const [commentCount, setCommentCount] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
   const currentUser = JSON.parse(localStorage.getItem('user'));
 
   const countryDetails = allCountries.find(
@@ -29,8 +30,6 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
       .then(({ likes, dislikes }) => {
         setLikes(likes);
         setDislikes(dislikes);
-
-        // Retrieve saved reaction for this post from localStorage
         const savedReaction = localStorage.getItem(`reaction-${currentUser?.id}-${post.id}`);
         setUserReaction(savedReaction || null);
       })
@@ -39,7 +38,13 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
     getCommentCountByPostId(post.id)
       .then(({ count }) => setCommentCount(count))
       .catch(err => console.error('Failed to get comment count:', err));
-  }, [post.id,currentUser?.id]);
+
+    if (currentUser && currentUser.id !== post.user_id) {
+      isFollowingUser(post.user_id)
+        .then((status) => setIsFollowing(status))
+        .catch(err => console.error('Failed to check follow status:', err));
+    }
+  }, [post.id, currentUser?.id, post.user_id]);
 
   const handleReaction = async (type) => {
     try {
@@ -47,8 +52,6 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
       const { likes, dislikes } = await fetchLikeCounts(post.id);
       setLikes(likes);
       setDislikes(dislikes);
-
-      // Save user reaction to localStorage
       localStorage.setItem(`reaction-${currentUser?.id}-${post.id}`, type);
       setUserReaction(type);
     } catch (err) {
@@ -60,10 +63,12 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
     try {
       if (isFollowing) {
         await unfollowUser(post.user_id);
-        onFollowToggle(post.user_id, false);
+        setIsFollowing(false);
+        if (onFollowToggle) onFollowToggle(post.user_id, false);
       } else {
         await followUser(post.user_id);
-        onFollowToggle(post.user_id, true);
+        setIsFollowing(true);
+        if (onFollowToggle) onFollowToggle(post.user_id, true);
       }
     } catch (err) {
       console.error('Follow action failed', err);
@@ -97,7 +102,10 @@ const Post = ({ post, allCountries = [], showActions = false, isFollowing, onFol
         </div>
         <span className="username">{post.username}</span>
         {currentUser && currentUser.id !== post.user_id && (
-          <button className={`follow-btn ${isFollowing ? 'unfollow' : ''}`} onClick={handleFollowClick}>
+          <button
+            className={`follow-btn ${isFollowing ? 'unfollow' : ''}`}
+            onClick={handleFollowClick}
+          >
             {isFollowing ? 'Unfollow' : 'Follow'}
           </button>
         )}
