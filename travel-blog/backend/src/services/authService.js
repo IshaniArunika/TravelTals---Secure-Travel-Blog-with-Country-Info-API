@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const { generateToken } = require('../config/jwt');
-const { generateApiKey } = require('../config/apiKye');
 const userService = require('./userService');
 const authDao = require('../dao/authDao');
 
@@ -17,12 +16,11 @@ class AuthService {
         if (!isMatch) return null;
 
         const { accessToken, csrfToken } = generateToken(user);
-        const apiKey = await this.generateOrFetchApiKey(user.id);
+ 
 
         return {
             accessToken,
             csrfToken,
-            apiKey,
             user: {
                 id: user.id,
                 email: user.email,

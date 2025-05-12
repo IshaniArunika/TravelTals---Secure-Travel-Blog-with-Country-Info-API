@@ -40,7 +40,6 @@ router.post('/register', [
         message: 'User registered and logged in successfully',
         token: authResult.accessToken,
         csrfToken: authResult.csrfToken,
-        apiKey: authResult.apiKey,
         user: authResult.user
       });
     } catch (error) {
@@ -78,7 +77,6 @@ router.post('/login', [
             message: "Login successful",
             token: authResult.accessToken,
             csrfToken: authResult.csrfToken,
-            apiKey: authResult.apiKey,
             user: authResult.user,
         });
     } catch (error) {
@@ -87,3 +85,4 @@ router.post('/login', [
 });
 
 module.exports = router;
+
