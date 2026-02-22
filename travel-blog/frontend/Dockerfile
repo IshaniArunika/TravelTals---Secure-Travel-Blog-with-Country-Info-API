@@ -8,7 +8,7 @@ WORKDIR /app
 COPY ./build ./build 
 RUN npm install -g serve
 
-# Expose app port (change if necessary)
+# Expose app port 
 EXPOSE 3001
 
 # Start the application

@@ -92,7 +92,7 @@ const AddPost = ({ allCountries }) => {
           onChange={(e) => setContent(e.target.value)}
         />
 
-        {/* ✅ Use CountrySelect like in Home.js */}
+        {/*  Use CountrySelect like in Home.js */}
         <CountrySelect
           value={country}
           onChange={setCountry}
